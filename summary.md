@@ -1,11 +1,10 @@
-# 컵앤핸들 리스트 — 2026-09-08 (Tue)
+# 컵앤핸들 리스트 — 2026-09-09 (Wed)
 
 ## 시장 상황
 
 | 나라 | 국면 |
 |---|---|
 | 홍콩 | 횡보장 |
-| 한국 | 횡보장 |
 | 일본 | 횡보장 |
 | 중국 | 판정불가 |
 | 미국 | 상승장 |
@@ -14,11 +13,11 @@
 
 | 나라 | 조회 | 발견 | 비고 |
 |---|---|---|---|
-| 홍콩 | 2,814 | 9 | 정상 |
-| 한국 | 2,685 | 1 | 정상 |
-| 일본 | 8,700 | 2 | 조회실패 8,183 |
-| 중국 | 4,600 | 14 | 정상 |
-| 미국 | 6,953 | 150 | 정상 |
+| 홍콩 | 2,814 | 10 | 정상 |
+| 한국 | 0 | 0 | 목록 실패(RuntimeError) |
+| 일본 | 8,700 | 8 | 조회실패 7,509 |
+| 중국 | 4,600 | 21 | 정상 |
+| 미국 | 6,954 | 152 | 정상 |
 
 
 ## 섹터 흐름
@@ -40,48 +39,48 @@ _나라 이름을 누르면 펼쳐집니다._
 
 | 종목명 | 코드 | 섹터 | 현재가 | 매수기준가 | 돌파일 | 돌파후일수 | 돌파거래량 | 현재가_최고가대비% | 투자포인트 |
 |---|---|---|---|---|---|---|---|---|---|
-| CF Industries Holdings, Inc. Common St | CF | 미분류 | 133.35 | 132.68 | 2026-09-01 | 3.00 | 1.57 | -6.10 | - · 분기이익 +100% 급증 · 주가강도 상위 13% |
+| CF Industries Holdings, Inc. Common St | CF | 미분류 | 134.33 | 132.68 | 2026-09-01 | 4.00 | 1.57 | -5.40 | - · 분기이익 +100% 급증 · 주가강도 상위 8% (최상위권) |
 
 </details>
 
 
 
-## 컵 모양 상위 5개
+## 컵 모양 상위 4개
 
-_전체 88개 중 아래 조건을 모두 통과한 종목입니다._
+_전체 95개 중 아래 조건을 모두 통과한 종목입니다._
 
 _매수 기준가 ±5% · 사상최고가 −10% 이내 · 상대강도 80 이상 · 컵 깊이 33% 이하 · 베이스 30주 이하 · 손잡이 거래량 감소._
 
 _전체 목록은 results/list1_cup.csv 에 있습니다._
 
 <details open>
-<summary><b>미국 &nbsp; 5개</b></summary>
+<summary><b>미국 &nbsp; 4개</b></summary>
 
 | 종목명 | 코드 | 섹터 | 컵점수 | 현재가 | 매수기준가 | 기준가까지% | 투자포인트 |
 |---|---|---|---|---|---|---|---|
-| Teck Resources Ltd Ordinary Shares | TECK | 미분류 | 82.30 | 69.10 | 68.17 | 1.37 | - · 분기이익 +324% 급증 · 주가강도 상위 8% (최상위권) |
-| Five Below, Inc. - Common Stock | FIVE | 미분류 | 77.30 | 252.20 | 244.77 | 3.03 | - · 분기이익 +195% 급증 · 주가강도 상위 11% |
-| Equinor ASA | EQNR | 미분류 | 76.70 | 42.09 | 41.67 | 1.00 | - · 분기이익 +298% 급증 · 주가강도 상위 8% (최상위권) |
-| Suncor Energy  Inc. Common Stock | SU | 미분류 | 75.10 | 67.33 | 66.86 | 0.71 | - · 분기이익 +241% 급증 · 주가강도 상위 20% |
-| CF Industries Holdings, Inc. Common St | CF | 미분류 | 73.20 | 133.35 | 132.68 | 0.50 | - · 분기이익 +100% 급증 · 주가강도 상위 13% |
+| Five Below, Inc. - Common Stock | FIVE | 경기소비재 | 77.30 | 254.07 | 244.77 | 3.80 | 전문 유통 중형주 · 시총 140억달러 · ROE 28% · 주가강도 상위 9% (최상위권) |
+| Equinor ASA | EQNR | 에너지 | 76.70 | 43.39 | 41.67 | 4.12 | 석유·가스(종합) 대형주 · 시총 1,030억달러 · 분기이익 +298% 급증 · ROE 21% · 주가강도 상위 6% (최상위권) |
+| Suncor Energy  Inc. Common Stock | SU | 에너지 | 75.10 | 67.89 | 66.86 | 1.55 | 석유·가스(종합) 대형주 · 시총 794억달러 · 분기이익 +241% 급증 · ROE 19% · 주가강도 상위 18% |
+| CF Industries Holdings, Inc. Common St | CF | 미분류 | 73.20 | 134.33 | 132.68 | 1.24 | - · 분기이익 +100% 급증 · 주가강도 상위 8% (최상위권) |
 
 </details>
 
 
-## 리스트 2 — 캔슬림 통과 1개
+## 리스트 2 — 캔슬림 통과 2개
 
 <details>
-<summary><b>미국 &nbsp; 1개</b></summary>
+<summary><b>미국 &nbsp; 2개</b></summary>
 
 | 종목명 | 코드 | 현재가 | 매수기준가 | C | A | N | S | L | I | M |
 |---|---|---|---|---|---|---|---|---|---|---|
-| AngloGold Ashanti PLC Ordinary Shares | AU | 109.07 | 123.51 | pass | pass | pass | unknown | pass | unknown | pass |
+| Fortuna Mining Corp. Common Shares | FSM | 12.16 | 12.95 | pass | pass | pass | pass | pass | pass | pass |
+| AngloGold Ashanti PLC Ordinary Shares | AU | 107.83 | 123.51 | pass | pass | fail | pass | pass | pass | pass |
 
 </details>
 
 
 ---
-소요 52분 · 전체 목록은 results 폴더
+소요 47분 · 전체 목록은 results 폴더
 
 
 ※ 후보 목록이며 매수 추천이 아닙니다. 판단과 책임은 본인에게 있습니다.
@@ -89,6 +88,6 @@ _전체 목록은 results/list1_cup.csv 에 있습니다._
 
 ---
 
-### 📄 [PDF로 보기](https://github.com/chkchp0702-spec/Cup/blob/main/results/report_2026-09-08.pdf)  ·  [⬇️ PDF 저장](https://github.com/chkchp0702-spec/Cup/raw/main/results/report_2026-09-08.pdf)
+### 📄 [PDF로 보기](https://github.com/chkchp0702-spec/Cup/blob/main/results/report_2026-09-09.pdf)  ·  [⬇️ PDF 저장](https://github.com/chkchp0702-spec/Cup/raw/main/results/report_2026-09-09.pdf)
 
 _'PDF로 보기'는 화면에서 바로 열리고, 'PDF 저장'은 파일로 내려받습니다._
