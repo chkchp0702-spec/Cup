@@ -88,7 +88,7 @@ jobs:
 
       - name: 파이썬 패키지
         if: steps.guard.outputs.skip != 'true'
-        run: pip install -q "numpy<2.3" "pandas>=2.2,<3" "yfinance>=0.2.60" curl_cffi pykrx finance-datareader akshare openpyxl xlrd lxml html5lib requests
+        run: pip install -q "numpy<2.3" "pandas>=2.2,<3" "yfinance>=0.2.60" matplotlib curl_cffi pykrx finance-datareader akshare openpyxl xlrd lxml html5lib requests
 
       - name: 스크립트 생성
         if: steps.guard.outputs.skip != 'true'
@@ -149,7 +149,9 @@ jobs:
                    nh_stale=50,       # 회복 후 이 일수 안에 못 뚫으면 패턴 무효 (박스로 변질)
                    nh_bo_max=60,      # 돌파 후 60일 넘은 건 제외
                    piv52_max=0.30, ath_piv_max=0.15, ath_over_max=0.08, list1_ath_max=0.60,
-                   top_ath_max=0.15, top_rs_min=65, top_depth_max=65, top_weeks_max=50,
+                   top_ath_max=0.15, top_rs_min=65, top_depth_max=50, top_weeks_max=50,
+                   top_weeks_min=6,      # 6주 미만은 컵이 아니라 짧은 눌림
+                   nh_depth_max=50,      # 손잡이 없는 컵 목록: 깊이 50% 초과는 폭락 후 반등
                    top_hvol_max=1.10, top_dist=8.0, min_bars_2y=400,
                    bo_vol_min=1.25)      # ★ 돌파일 거래량 (직전 50일 평균 대비)
 
@@ -172,6 +174,104 @@ jobs:
                    star_ext_max=0.20,   # ★: 갭 시가 대비 +20% 이내
                    ath_max=0.20,        # 사상최고가 -20% 이내
                    rs_min=70, min_bars_2y=400)
+
+
+          # =============================================================================
+          #  모양 판정 — 숫자 몇 개가 아니라 컵 구간 전체를 이상적인 U자 그림과 비교
+          # =============================================================================
+          # --- 모양 판정: 컵 구간 전체를 이상적인 U자 그림과 직접 비교한다 ---
+          SH = dict(n=41, top_min=65, nh_min=65, star_min=45)   # 상위·손잡이없음 65점, ★ 45점
+
+
+          def _tmpl(tt, m, k, r_end):
+              """바닥 위치 m, 둥근 정도 k(1=V, 2~4=U) 인 본보기. 왼쪽 끝 1, 오른쪽 끝 r_end."""
+              left = ((m - tt) / m) ** k
+              right = ((tt - m) / (1 - m)) ** k * r_end
+              return np.where(tt < m, left, right)
+
+
+          def shape_score(c, li, bi, ri):
+              """
+              c: 종가 배열, li: 좌측 고점, bi: 바닥, ri: 우측 끝(손잡이 시작 또는 회복 지점)
+              반환: (점수 0~100, 판정 글자)
+                1) U자 본보기와의 오차 (40점)   — 둥근 바닥 컵에 가까울수록
+                2) 매끄러움 (25점)             — 주봉 기준 오르내림이 적을수록
+                3) 바닥 체류 (20점)            — 바닥권에서 머문 시간이 있을수록 (V자 배제)
+                4) 좌우 균형 (15점)            — 바닥이 가운데 근처에 있을수록
+                V자 본보기가 더 잘 맞으면 -25점, 계단식 하락(오른쪽이 덜 회복)이면 감점
+              """
+              seg = np.asarray(c[li:ri + 1], float)
+              L = len(seg)
+              if L < 15:
+                  return 0.0, "짧음"
+              w = max(3, L // 15)
+              sm = pd.Series(seg).rolling(w, center=True, min_periods=1).mean().to_numpy()
+              top, bot = max(seg[0], seg[-1]), float(sm.min())    # 끝점은 평활 전 실제 값
+              if top <= bot:
+                  return 0.0, "판정불가"
+              y = np.clip((sm - bot) / (top - bot), 0, 1.2)
+              tt = np.linspace(0, 1, SH["n"])
+              yy = np.interp(tt, np.linspace(0, 1, L), y)
+              m = float(np.clip(tt[int(np.argmin(yy))], 0.15, 0.85))
+              r_end = float(np.clip((seg[-1] - bot) / (top - bot), 0, 1.2))
+              l_end = float(np.clip((seg[0] - bot) / (top - bot), 0, 1.2))
+              yy[0], yy[-1] = l_end, r_end
+              yy_n = yy.copy()
+              yy_n[tt < m] = yy[tt < m] / max(l_end, 1e-6)          # 왼쪽 끝을 1로 맞춘다
+              rm = lambda k: float(np.sqrt(np.mean((yy_n - _tmpl(tt, m, k, r_end)) ** 2)))
+              rU = min(rm(2), rm(3))
+              rV = rm(1)
+
+              fit = float(np.clip(1 - rU / 0.22, 0, 1)) * 40
+
+              wk = seg[::5] if L >= 30 else seg
+              lo, hi = float(np.min(seg)), float(max(seg[0], seg[-1]))
+              yw = (wk - lo) / (hi - lo) if hi > lo else wk * 0
+              tv = float(np.sum(np.abs(np.diff(yw))))
+              ideal = (yw[0] - yw.min()) + (yw[-1] - yw.min())
+              eff = ideal / tv if tv > 0 else 0.0
+              smooth = float(np.clip((eff - 0.30) / 0.45, 0, 1)) * 25
+
+              low_frac = float(np.mean(yy < 0.33))
+              bottom = (20 if 0.22 <= low_frac <= 0.60 else
+              14 if 0.15 <= low_frac <= 0.70 else
+              6 if low_frac >= 0.08 else 0)
+
+              # 좌우 경사: 바닥권(아래 1/3)에 들어가기까지, 빠져나와 끝까지 걸린 시간 비율
+              low_idx = np.where(yy < 0.33)[0]
+              if len(low_idx):
+                  dec_f = tt[low_idx[0]]                 # 왼쪽 하락에 걸린 비율
+                  ris_f = 1 - tt[low_idx[-1]]            # 오른쪽 상승에 걸린 비율
+              else:
+                  dec_f = ris_f = 0.0
+              sym = (15 if (dec_f >= 0.10 and ris_f >= 0.18 and 0.25 <= m <= 0.75) else
+           8 if (ris_f >= 0.12 and 0.15 <= m <= 0.85) else 0)
+              if ris_f < 0.10:                       # 오른쪽이 수직 급등 = 컵이 아니라 바닥 박스 탈출
+                  sym -= 20
+
+              sc = fit + smooth + bottom + sym
+              tag = "U자"
+              if rV < rU * 0.9:
+                  sc -= 25
+                  tag = "V자"
+              if eff < 0.40:
+                  tag = "들쭉날쭉"
+              elif tag == "U자" and ris_f < 0.10:
+                  tag = "급등"
+              if r_end < 0.80:                       # 오른쪽이 왼쪽 고점 근처까지 못 올라옴
+                  sc -= (0.80 - r_end) * 60
+                  tag = tag if tag != "U자" else "덜회복"
+              return round(float(np.clip(sc, 0, 100)), 1), tag
+
+
+          CHART = {}          # 종목별 미니차트용 종가·표시점 (검출된 종목만)
+
+
+          def keep_chart(tk, c, li, bi, ri, piv, he=None, bo_i=None):
+              st = max(0, li - 20)
+              CHART[tk] = dict(c=np.asarray(c[st:], dtype=np.float32), li=li - st, bi=bi - st, ri=ri - st,
+                     he=None if he is None else he - st, bo=None if bo_i is None else bo_i - st,
+                     piv=float(piv))
 
 
           def peaks(h, w=10):
@@ -303,7 +403,10 @@ jobs:
                       W(li, f"피봇이 52주 고점보다 {piv52*100:.0f}% 아래 (최대 {P['piv52_max']*100:.0f}%) — 후발주")
                       continue
                   fresh_raw = bool(bo_i is not None and days_bo <= 5 and bo_v >= P["bo_vol_min"])
+                  shp, stag = shape_score(c, li, bi, ri)
+                  keep_chart(tk, c, li, bi, ri, piv, he=he, bo_i=bo_i)
                   return [dict(ticker=tk, market=mkt, name="", last=round(last, 2), hi2y=round(float(np.max(h)), 2),
+                               shape=shp, shape_tag=stag,
                                pattern="컵앤핸들", pivot=round(piv, 2), dist=round(d * 100, 2),
                                depth=round(depth * 100, 1), weeks=round(cd / 5, 1),
                                hdepth=round(hd * 100, 1), hvol=round(vr, 2), hdays=hdays,
@@ -481,7 +584,10 @@ jobs:
                       W(li, f"피봇이 52주 고점보다 {piv52*100:.0f}% 아래 — 후발주")
                       continue
                   fresh_raw = bool(bo_i is not None and days_bo <= 5 and bo_v >= P["bo_vol_min"])
+                  shp, stag = shape_score(c, li, bi, touch)
+                  keep_chart(tk, c, li, bi, touch, piv, bo_i=bo_i)
                   return [dict(ticker=tk, market=mkt, name="", last=round(last, 2), hi2y=round(float(np.max(h)), 2),
+                               shape=shp, shape_tag=stag,
                                pattern="손잡이없음", pivot=round(piv, 2), dist=round(d * 100, 2),
                                depth=round(depth * 100, 1), weeks=round(cd / 5, 1),
                                hdepth=0.0, hvol=np.nan, hdays=0, acc=round(acc, 2),
@@ -1132,6 +1238,7 @@ jobs:
                           out.append(f"  - 매수기준가 {r['pivot']:,.2f} · 현재가 대비 {r['dist']:+.1f}% → 상위 목록은 ±{P['top_dist']:.0f}% 안이어야 함\n")
                           out.append(f"  - 돌파 {'됨 (' + str(r['days_bo']) + '일 전, 거래량 ' + str(r['bo_vol']) + '배)' if r['broke'] else '아직 안 됨'} → ★는 5일 이내·1.4배 이상\n")
                           out.append(f"  - 컵 깊이 {r['depth']}% · 기간 {r['weeks']}주 · 손잡이 {r['hdepth']}% · 손잡이 거래량 {r['hvol']}배\n")
+                          out.append(f"  - 모양 점수 {r['shape']}점 ({r['shape_tag']}) → 상위 목록은 {SH['top_min']}점 이상, ★는 {SH['star_min']}점 이상\n")
                       else:
                           out.append(f"  - 갭일 {r['gap_date']} ({r['days']}일 전) · 갭 {r['gap']}% · 거래량 {r['volx']}배 · 박스 {r['box_weeks']}주 폭 {r['box_range']}%\n")
                           out.append(f"  - 성곽돌파 {'✓' if r['over6m'] else '✗'} · 완전돌파 {'✓' if r['clean'] else '✗'} · 갭유지 {'✓' if r['held'] else '✗'} · 갭시가 대비 {r['ext']:+.1f}%\n")
@@ -1352,7 +1459,7 @@ jobs:
                                     and not r["newly"])
                           return pd.Series([round(hi, 2), round(piv_off, 1), round(over, 1), ok])
                       res[["ath", "ath_piv_off", "ath_over", "ath_ok"]] = res.apply(_ath, axis=1)
-                      res["fresh"] = res["fresh_raw"] & res["ath_ok"]
+                      res["fresh"] = res["fresh_raw"] & res["ath_ok"] & (res["shape"] >= SH["star_min"])
                       lim = P["list1_ath_max"] * 100
                       keep = res["ath_piv_off"].isna() | (res["ath_piv_off"] <= lim)
                       if int((~keep).sum()):
@@ -1374,7 +1481,7 @@ jobs:
                           a = r["ath_piv_off"]
                           sc += 3 if pd.isna(a) else (12 if a <= 5 else (8 if a <= 15 else 3))
                           sc += 8 if r["up"] >= 50 else 4
-                          return round(sc, 1)
+                          return round(sc * 0.6 + r["shape"] * 0.4, 1)      # 모양 점수 40% 반영
                       res["score"] = res.apply(score, axis=1)
                       res = res.sort_values(["fresh", "actionable", "ath_piv_off"],
                                             ascending=[False, False, True]).reset_index(drop=True)
@@ -1385,17 +1492,21 @@ jobs:
                                (f"사상최고가 −{P['top_ath_max']*100:.0f}% 이내", res["ath_piv_off"] <= P["top_ath_max"] * 100),
                                (f"상대강도 {P['top_rs_min']} 이상", res["rs_pct"] >= P["top_rs_min"]),
                                (f"컵 깊이 {P['top_depth_max']}% 이하", res["depth"] <= P["top_depth_max"]),
-                               (f"베이스 {P['top_weeks_max']}주 이하", res["weeks"] <= P["top_weeks_max"]),
+                               (f"베이스 {P['top_weeks_min']}~{P['top_weeks_max']}주",
+                                (res["weeks"] >= P["top_weeks_min"]) & (res["weeks"] <= P["top_weeks_max"])),
+                               (f"컵 모양 점수 {SH['top_min']} 이상", res["shape"] >= SH["top_min"]),
                                (f"손잡이 거래량 {P['top_hvol_max']:.2f}배 이하", res["hvol"] <= P["top_hvol_max"])]
                       if "acc" not in res.columns:
                           res["acc"] = np.nan
                       l1 = res[["name", "ticker", "market", "pattern", "last", "pivot", "dist", "depth", "weeks",
                                 "hdepth", "acc", "actionable", "broke", "fresh", "days_bo", "bo_date", "bo_vol",
-                                "ath", "ath_piv_off", "ath_over", "off52", "newly", "rs_pct", "score"]].copy()
+                                "ath", "ath_piv_off", "ath_over", "off52", "newly", "rs_pct", "score",
+                                "shape", "shape_tag"]].copy()
                       l1.columns = ["종목명", "코드", "시장", "패턴", "현재가", "매수기준가", "기준가까지%", "컵깊이%",
                                     "컵기간주", "손잡이%", "매집강도", "매수권", "돌파", "막돌파", "돌파후일수", "돌파일",
                                     "돌파거래량", "사상최고가", "피봇_최고가대비%", "현재가_최고가대비%",
-                                    "52주고점대비%", "신규상장", "상대강도", "컵점수"]
+                                    "52주고점대비%", "신규상장", "상대강도", "컵점수", "모양점수", "모양"]
+                      l1.loc[~l1["돌파"].astype(bool), "돌파거래량"] = np.nan     # 아직 안 뚫었으면 '-'
                   else:
                       def _ath(r):
                           hi = ath.get(r["ticker"]) or r.get("hi2y")   # 전체 이력 실패 시 2년 고점
@@ -1648,21 +1759,23 @@ jobs:
                   title="컵앤핸들 리스트", issue="컵앤핸들",
                   kpi=["★ 사상최고가 돌파", "컵 모양 상위", "캔슬림 통과", "컵 모양 전체"],
                   star_h="★ 사상최고가 돌파 종목",
-                  star_desc=f"컵앤핸들 완성 후 5거래일 이내 · 돌파 거래량 {P['bo_vol_min']:.2f}배 이상 · "
+                  star_desc=f"컵앤핸들 완성 후 5거래일 이내 · 컵 모양 점수 {SH['star_min']} 이상 · "
+                            f"돌파 거래량 {P['bo_vol_min']:.2f}배 이상 · "
                             f"손잡이 고점이 사상최고가 −{P['ath_piv_max']*100:.0f}% 이내 · "
                             f"현재가가 사상최고가 +{P['ath_over_max']*100:.0f}% 이내 · 상장 2년 미만 제외",
                   star_sort="돌파후일수",
                   top_h="컵 모양 상위", top_sub=f"매수 기준가 ±{P['top_dist']:.0f}%",
                   top_desc=f"매수 기준가 ±{P['top_dist']:.0f}% · 사상최고가 −{P['top_ath_max']*100:.0f}% 이내 · "
                            f"상대강도 {P['top_rs_min']} 이상 · 컵 깊이 {P['top_depth_max']}% 이하 · "
-                           f"베이스 {P['top_weeks_max']}주 이하 · 손잡이 거래량 감소",
+                           f"베이스 {P['top_weeks_min']}~{P['top_weeks_max']}주 · 손잡이 거래량 감소 · "
+                           f"컵 모양 점수 {SH['top_min']} 이상",
                   list1="results/list1_cup.csv", list0="results/list0_ath_breakout.csv",
-                  FC=["NEW", "종목명", "코드", "섹터", "패턴", "현재가", "매수기준가", "돌파일", "돌파후일수",
-                      "돌파거래량", "현재가_최고가대비%", "투자포인트"],
-                  TC=["NEW", "종목명", "코드", "섹터", "컵점수", "연속일", "현재가", "매수기준가",
-                      "기준가까지%", "컵기간주", "투자포인트"],
-                  NH=["NEW", "종목명", "코드", "섹터", "현재가", "매수기준가", "기준가까지%", "컵깊이%", "컵기간주",
-                      "돌파일", "돌파거래량", "매집강도", "현재가_최고가대비%", "투자포인트"],
+                  FC=["NEW", "종목명", "코드", "차트", "모양점수", "섹터", "패턴", "현재가", "매수기준가", "돌파일",
+                      "돌파후일수", "돌파거래량", "현재가_최고가대비%", "투자포인트"],
+                  TC=["NEW", "종목명", "코드", "차트", "모양점수", "컵점수", "섹터", "연속일", "현재가", "매수기준가",
+                      "기준가까지%", "컵깊이%", "컵기간주", "투자포인트"],
+                  NH=["NEW", "종목명", "코드", "차트", "모양점수", "섹터", "현재가", "매수기준가", "기준가까지%",
+                      "컵깊이%", "컵기간주", "돌파일", "돌파거래량", "매집강도", "현재가_최고가대비%", "투자포인트"],
                   score="컵점수", foot="윌리엄 오닐 컵앤핸들·캔슬림 기준 자동 스캔 결과.")
           else:
               CFG = dict(
@@ -1686,7 +1799,44 @@ jobs:
                       "횡보주", "횡보폭%", "성곽돌파", "완전돌파", "투자포인트"],
                   score="갭점수", foot="횡보 박스를 갭으로 뛰어넘은 종목 자동 스캔 결과.")
 
-          NUMC = {"현재가", "매수기준가", "기준가까지%", "컵깊이%", "손잡이%", "컵점수", "돌파후일수", "돌파거래량",
+          def mini_chart(tk):
+              """컵 구간 미니차트를 PNG(data URI)로. 선=종가, 점선=매수기준가, 점=좌측고점·바닥·우측, 음영=손잡이"""
+              d = CHART.get(tk)
+              if not d:
+                  return ""
+              try:
+                  import base64
+                  import matplotlib
+                  matplotlib.use("Agg")
+                  import matplotlib.pyplot as plt
+                  c = d["c"]
+                  x = np.arange(len(c))
+                  fig, ax = plt.subplots(figsize=(1.9, 0.55), dpi=160)
+                  ax.plot(x, c, color="#12355b", lw=0.9)
+                  ax.axhline(d["piv"], color="#c8890f", lw=0.7, ls=(0, (3, 2)))
+                  if d.get("he") is not None and d["he"] > d["ri"]:
+                      ax.axvspan(d["ri"], d["he"], color="#c8890f", alpha=0.15, lw=0)
+                  for k_, col in (("li", "#12355b"), ("bi", "#a5322a"), ("ri", "#12355b")):
+                      i = d.get(k_)
+                      if i is not None and 0 <= i < len(c):
+                          ax.plot([i], [c[i]], "o", ms=2.2, color=col)
+                  if d.get("bo") is not None and 0 <= d["bo"] < len(c):
+                      ax.plot([d["bo"]], [c[d["bo"]]], "^", ms=3, color="#166b45")
+                  lo, hi = float(np.min(c)), float(max(np.max(c), d["piv"]))
+                  pad = (hi - lo) * 0.08 or 1
+                  ax.set_ylim(lo - pad, hi + pad)
+                  ax.set_xlim(0, len(c) - 1)
+                  ax.axis("off")
+                  fig.subplots_adjust(0, 0, 1, 1)
+                  buf = io.BytesIO()
+                  fig.savefig(buf, format="png", transparent=True)
+                  plt.close(fig)
+                  return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
+              except Exception:
+                  return ""
+
+
+          NUMC = {"모양점수", "현재가", "매수기준가", "기준가까지%", "컵깊이%", "손잡이%", "컵점수", "돌파후일수", "돌파거래량",
                   "피봇_최고가대비%", "현재가_최고가대비%", "52주고점대비%", "사상최고가", "컵기간주", "상대강도",
                   "갭후일수", "갭크기%", "거래량배수", "갭시가", "갭저가", "박스고점", "박스저점", "횡보주",
                   "횡보폭%", "갭시가대비%", "박스위%", "최고가대비%", "갭점수"}
@@ -1710,6 +1860,7 @@ jobs:
 
 
           def tbl(d, cols, n=80):
+              cols = [c for c in cols if c != "차트" and c in d.columns] if d is not None else cols
               if d is None or len(d) == 0:
                   return "_해당 없음_\n"
               o = "| " + " | ".join(cols) + " |\n|" + "|".join(["---"] * len(cols)) + "|\n"
@@ -1764,9 +1915,14 @@ jobs:
               for c in cols:
                   o.append('<th' + (' class="n"' if c in NUMC else '') + '>' + str(c) + '</th>')
               o.append('</tr></thead><tbody>')
-              for k, (_, r) in enumerate(df[cols].head(n).iterrows()):
+              have = [c for c in cols if c in df.columns]
+              for k, (_, r) in enumerate(df[have].head(n).iterrows()):
                   o.append('<tr class="' + ("od" if k % 2 else "") + '">')
                   for c in cols:
+                      if c == "차트":
+                          src = mini_chart(r.get("코드", ""))
+                          o.append('<td class="ch">' + (f'<img src="{src}">' if src else '') + '</td>')
+                          continue
                       v = r[c]
                       if c in ("C", "A", "N", "S", "L", "I", "M"):
                           cls = {"pass": "ok", "fail": "no"}.get(str(v), "un")
@@ -1850,6 +2006,8 @@ jobs:
               "td.new{text-align:center;font-size:6.6pt;font-weight:700;color:#fff;background:#c8890f;"
               "letter-spacing:.3px;width:26px}"
               "td.st{text-align:right;color:#6b675f;font-size:7.8pt;white-space:nowrap}"
+              "td.ch{padding:1px 4px;width:128px}td.ch img{width:122px;height:35px;display:block}"
+              ".legend{font-size:7.8pt;color:#6b675f;margin:-4px 0 9px 3px}"
               ".gone{border:1px solid #e0dcd5;border-left:5px solid #9a958c;background:#fbfaf8;"
               "padding:8px 12px;margin-bottom:12px;font-size:8.2pt;color:#4a463f}"
               ".sec{border:1px solid #e0dcd5;border-left:5px solid #12355b;background:#fbfaf8;"
@@ -1906,11 +2064,13 @@ jobs:
                   md.append("_조건에서 이탈했습니다. 보유 중이면 확인해보세요._\n")
                   md.append(" · ".join(f"{nm}({tk})" for tk, nm in GONE) + "\n")
               if IS_CUP and len(l1) and "패턴" in l1.columns:
-                  nh = l1[(l1["패턴"] == "손잡이없음") & (l1["매수권"] | l1["막돌파"])]
+                  nh = l1[(l1["패턴"] == "손잡이없음") & (l1["매수권"] | l1["막돌파"])
+                          & (l1["모양점수"] >= SH["nh_min"]) & (l1["컵깊이%"] <= P["nh_depth_max"])]
                   nh = nh.sort_values(["NEW", "기준가까지%"], ascending=[False, False]).head(40)
                   md += ["", f"\n## 손잡이 없는 컵 {len(nh)}개\n",
                          f"_컵 우측이 좌측 고점 −{P['nh_rim']*100:.0f}% 이내까지 회복했고 되밀림(손잡이) 없이 곧장 뚫거나 "
-                         f"뚫기 직전. 매수기준가 = 좌측 고점. 기준가 −12% ~ +5% 또는 5일 내 돌파._\n"]
+                         f"뚫기 직전. 매수기준가 = 좌측 고점. 기준가 −12% ~ +5% 또는 5일 내 돌파 · "
+                         f"컵 깊이 {P['nh_depth_max']}% 이하 · 컵 모양 점수 {SH['nh_min']} 이상._\n"]
                   md += by_country(nh, CFG["NH"], open_first=True)
               md.append(f"\n## 리스트 2 — 캔슬림 통과 {len(l2)}개\n")
               if len(l2):
@@ -1946,6 +2106,10 @@ jobs:
                       cl = "up" if st_ == "uptrend" else ("dn" if st_ == "downtrend" else "nt")
                       H.append(f'<div class="m {cl}"><b>{LBL[st_]}</b><span>{nm_}</span></div>')
               H.append('</div>')
+              if IS_CUP:
+                  H.append('<p class="legend"><b>모양점수</b> = 컵 구간을 이상적인 U자 그림과 비교한 점수(100점). '
+                           'V자·들쭉날쭉·오른쪽 수직 급등·덜 회복은 감점. &nbsp; <b>차트</b>: 남색 선 종가 · '
+                           '노란 점선 매수기준가 · 빨간 점 컵 바닥 · 노란 음영 손잡이 · 초록 삼각형 돌파일</p>')
               H.append('<h2>스캔 결과</h2><table><thead><tr><th>나라</th><th class="n">조회</th>'
                        '<th class="n">발견</th><th>비고</th></tr></thead><tbody>')
               for k_, s in enumerate(stats):
@@ -1972,11 +2136,13 @@ jobs:
                   H.append('</tbody></table>')
               H.append(h_country(top, TC))
               if IS_CUP and len(l1) and "패턴" in l1.columns:
-                  nh = l1[(l1["패턴"] == "손잡이없음") & (l1["매수권"] | l1["막돌파"])]
+                  nh = l1[(l1["패턴"] == "손잡이없음") & (l1["매수권"] | l1["막돌파"])
+                          & (l1["모양점수"] >= SH["nh_min"]) & (l1["컵깊이%"] <= P["nh_depth_max"])]
                   nh = nh.sort_values(["NEW", "기준가까지%"], ascending=[False, False]).head(40)
                   H.append(f'<h2>손잡이 없는 컵 <span class="sm">{len(nh)}개 · 매수기준가 = 좌측 고점</span></h2>'
                            f'<p class="note">컵 우측이 좌측 고점 −{P["nh_rim"]*100:.0f}% 이내까지 회복, 되밀림 없이 곧장 돌파 또는 직전 · '
-                           f'기준가 −12% ~ +5% 또는 5일 내 돌파</p>')
+                           f'기준가 −12% ~ +5% 또는 5일 내 돌파 · 컵 깊이 {P["nh_depth_max"]}% 이하 · '
+                           f'컵 모양 점수 {SH["nh_min"]} 이상</p>')
                   H.append(h_country(nh, CFG["NH"]))
               if globals().get("GONE"):
                   H.append(f'<h2>어제까지 있다가 빠진 종목 <span class="sm">{len(GONE)}개</span></h2>')
