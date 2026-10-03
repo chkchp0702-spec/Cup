@@ -573,6 +573,91 @@ jobs:
               return []
 
 
+          # =============================================================================
+          #  조용한 매집 — 최근 한 달 거래량이 그 전 석 달의 3배인데 가격은 제자리인 종목 (와이코프 흡수)
+          # =============================================================================
+          A = dict(win=20,            # 최근 한 달 (거래일)
+                   base=60,           # 비교 기준: 그 이전 석 달
+                   volx_min=3.0,      # 한 달 평균 거래량 / 기준 평균 거래량
+                   chg_lo=-5.0, chg_hi=3.0,   # 한 달 가격 변화 허용 범위 (%)
+                   days2x_min=10,     # 한 달 중 기준 거래량 2배 넘는 날 수 (하루 두 번 터진 건 제외)
+                   off52_max=40.0,    # 52주 고점 −40% 이내 (너무 망가진 종목 제외)
+                   show_min=55)       # 리포트에 싣는 최소 점수
+          ACC = []                    # 검출 결과
+
+
+          def detect_accum(df, tk, mkt, minp, minvol=0):
+              pre = _prep(df, minp, minvol)
+              if pre is None:
+                  return None
+              df, last, advol = pre
+              o, h, l, c, v = (df[x].to_numpy(float) for x in ("open", "high", "low", "close", "volume"))
+              n = len(df)
+              W, B = A["win"], A["base"]
+              if n < W + B + 20:
+                  return None
+              vw, vb = v[-W:], v[-W - B:-W]
+              base_v = float(np.nanmean(vb))
+              if base_v <= 0:
+                  return None
+              volx = float(np.nanmean(vw)) / base_v
+              if volx < A["volx_min"]:
+                  return None
+              chg = (c[-1] / c[-W - 1] - 1) * 100
+              if not (A["chg_lo"] <= chg <= A["chg_hi"]):
+                  return None
+              days2x = int(np.sum(vw >= base_v * 2))
+              if days2x < A["days2x_min"]:
+                  return None
+              hi52 = float(np.max(h[-252:])) if n >= 252 else float(np.max(h))
+              off52 = (1 - last / hi52) * 100
+              if off52 > A["off52_max"]:
+                  return None
+              # 상승일 / 하락일 거래량
+              cw = c[-W - 1:]
+              dc = np.diff(cw)
+              upv = float(np.sum(vw[dc > 0])); dnv = float(np.sum(vw[dc < 0]))
+              ud = upv / dnv if dnv > 0 else 9.0
+              # 거래량 큰 날 종가 위치 (0=저가, 1=고가) 평균
+              big = vw >= base_v * 2
+              rng = h[-W:] - l[-W:]
+              clv = np.where(rng > 0, (c[-W:] - l[-W:]) / np.where(rng > 0, rng, 1), 0.5)
+              clv_big = float(np.mean(clv[big])) if big.any() else 0.5
+              # 직전 석 달 추세 (한 달 전 시점의 종가 / 석 달 전 종가)
+              prev = (c[-W - 1] / c[-W - B - 1] - 1) * 100
+              # 저점 상승: 한 달을 반으로 나눠 뒤쪽 최저가가 앞쪽 최저가보다 높은가
+              lo1, lo2 = float(np.min(l[-W:-W // 2])), float(np.min(l[-W // 2:]))
+              hl = (lo2 / lo1 - 1) * 100 if lo1 > 0 else 0.0
+              # 변동폭 수축: 뒤쪽 열흘 평균 변동폭 / 앞쪽 열흘
+              tr = rng / c[-W:]
+              contr = float(np.mean(tr[-W // 2:]) / max(np.mean(tr[:W // 2]), 1e-9))
+
+              sc = 0.0
+              sc += 30 if volx >= 5 else 24 if volx >= 4 else 18             # 거래량 배수
+              sc += 20 if days2x >= 15 else 14 if days2x >= 12 else 8        # 지속성
+              sc += 25 if ud >= 1.5 else 18 if ud >= 1.2 else 10 if ud >= 0.9 else 0   # 상승일 우위
+              sc += 15 if prev <= 0 else 10 if prev <= 20 else 3 if prev <= 50 else 0  # 직전 추세: 하락·횡보 뒤가 좋다
+              sc += 10 if off52 <= 15 else 6 if off52 <= 30 else 2            # 고점 근접
+              sc += 5 if hl > 0 else 0                                         # 저점 상승
+              sc += 5 if contr <= 0.8 else 0                                   # 변동폭 수축
+              bonus_clv = 5 if clv_big >= 0.6 else (-5 if clv_big <= 0.35 else 0)
+              sc += bonus_clv
+              dist = bool(ud <= 0.8 or prev >= 50)                             # 분배 의심
+              if dist:
+                  sc -= 15
+              tag = ("분배 의심" if dist else
+                     "강한 매집" if (ud >= 1.5 and clv_big >= 0.55) else
+                     "매집" if ud >= 1.1 else "중립")
+              return dict(ticker=tk, market=mkt, name="", last=round(last, 2),
+                          acc_volx=round(volx, 2), acc_chg=round(chg, 1), acc_days2x=days2x,
+                          acc_ud=round(ud, 2), acc_clv=round(clv_big, 2), acc_prev=round(prev, 1),
+                          acc_hl=round(hl, 1), acc_contr=round(contr, 2), off52=round(off52, 1),
+                          acc_score=round(float(np.clip(sc, 0, 100)), 1), acc_tag=tag, dist=dist,
+                          advol=round(advol, 0), bars=n, rs_raw=rs_score(c),
+                          _c=np.asarray(c[-W - B - 10:], dtype=np.float32),
+                          _v=np.asarray(v[-W - B - 10:], dtype=np.float32))
+
+
           NHR, ALLRS = [], []      # 신고가 종목, 전체 종목의 상대강도 원점수 (백분위 계산용)
 
 
@@ -1404,6 +1489,93 @@ jobs:
 
 
           NH_COUNT = {}
+          ACL = pd.DataFrame()     # 보고서에 실을 매집 종목
+          ACC_HIST = {}            # 매집 이력 (종목 → 첫 검출일)
+
+
+          def build_accum():
+              """매집 종목: 점수순, 나라별 최대 15개(분배 의심은 별도 8개), 섹터 조회, 이력 저장"""
+              global ACL, ACC_HIST
+              path = "cache/seen_accum.json"
+              try:
+                  ACC_HIST = json.load(open(path, encoding="utf-8"))
+              except Exception:
+                  ACC_HIST = {}
+              today = time.strftime("%Y-%m-%d", time.gmtime(time.time() + 32400))
+              if not ACC:
+                  return
+              d = pd.DataFrame(ACC).drop_duplicates("ticker")
+              for _, r in d.iterrows():
+                  CHART["acc:" + r["ticker"]] = dict(kind="acc", c=r["_c"], v=r["_v"], win=A["win"])
+              d = d.drop(columns=["_c", "_v"])
+              allrs = np.sort(np.asarray(ALLRS, float))
+              d["rs_pct"] = d["rs_raw"].map(lambda x: np.nan if x is None or pd.isna(x) or not len(allrs) else
+                                            round(float(np.searchsorted(allrs, x)) / len(allrs) * 98 + 1, 0))
+              d = d.sort_values("acc_score", ascending=False)
+              good = d[~d["dist"] & (d["acc_score"] >= A["show_min"])].groupby("market", group_keys=False).head(15)
+              bad = d[d["dist"] & (d["acc_score"] >= A["show_min"] - 15)].groupby("market", group_keys=False).head(8)
+              d = pd.concat([good, bad]).reset_index(drop=True)
+              # 이력: 오늘 검출된 종목은 첫 검출일 유지, 30일 지난 이력은 정리
+              keep_after = time.strftime("%Y-%m-%d", time.gmtime(time.time() + 32400 - 30 * 86400))
+              nxt = {k: v for k, v in ACC_HIST.items() if v.get("last", "") >= keep_after}
+              for _, r in d.iterrows():
+                  t = r["ticker"]
+                  nxt[t] = {"first": nxt.get(t, {}).get("first", today), "last": today, "name": str(r["name"])[:24]}
+              ACC_HIST = nxt
+              try:
+                  json.dump(nxt, open(path, "w", encoding="utf-8"), ensure_ascii=False)
+              except Exception:
+                  traceback.print_exc()
+
+              def _days(t):
+                  f = ACC_HIST.get(t, {}).get("first")
+                  if not f:
+                      return 1
+                  try:
+                      return max(1, int((time.mktime(time.strptime(today, "%Y-%m-%d")) -
+                                         time.mktime(time.strptime(f, "%Y-%m-%d"))) / 86400) + 1)
+                  except Exception:
+                      return 1
+              d["acc_days"] = d["ticker"].map(_days)
+              log(f"조용한 매집 {len(ACC)}종목 중 {len(d)}개 선정 (분배 의심 {int(d['dist'].sum())}) — 섹터 조회 (남은 {left():.0f}분)")
+              set_deadline(max(1, min(10, left() - 4)))
+              try:
+                  for t in d["ticker"]:
+                      if left() < 4:
+                          break
+                      fetch_info(t)
+              except Deadline:
+                  print("  [강제마감] 매집 섹터 조회 중단", flush=True)
+              finally:
+                  clear_deadline()
+              import re as _re
+              d["name"] = d.apply(lambda r: (INFO.get(r["ticker"], {}).get("name") or r["name"])[:28]
+                                  if _re.match(r"^(TSE|SH|SZ)\d+$", str(r["name"])) else r["name"], axis=1)
+              d["sector"] = d["ticker"].map(lambda t: SECTOR_KR.get(INFO.get(t, {}).get("sector", ""),
+                                                                    INFO.get(t, {}).get("sector", "") or "미분류"))
+              d["mcap"] = d["ticker"].map(lambda t: INFO.get(t, {}).get("mcap"))
+              ACL = d
+              out = d.rename(columns={"name": "종목명", "ticker": "코드", "market": "시장", "sector": "섹터", "last": "현재가",
+                                      "acc_volx": "거래량배수", "acc_chg": "한달가격%", "acc_days2x": "2배넘는날",
+                                      "acc_ud": "상승일거래량비", "acc_clv": "큰날종가위치", "acc_prev": "직전3개월%",
+                                      "acc_hl": "저점상승%", "acc_contr": "변동폭수축", "off52": "52주고점대비%",
+                                      "acc_score": "매집점수", "acc_tag": "판정", "dist": "분배의심", "acc_days": "매집일째",
+                                      "rs_pct": "상대강도"})
+              out.drop(columns=["rs_raw", "bars"], errors="ignore").to_csv("results/list3_accum.csv", index=False, encoding="utf-8-sig")
+              save_info()
+
+
+          def accum_days(t):
+              """컵 카드용: 이 종목이 매집 목록에 있었으면 며칠째인지, 없으면 0"""
+              h = ACC_HIST.get(t)
+              if not h:
+                  return 0
+              try:
+                  today = time.strftime("%Y-%m-%d", time.gmtime(time.time() + 32400))
+                  return max(1, int((time.mktime(time.strptime(today, "%Y-%m-%d")) -
+                                     time.mktime(time.strptime(h["first"], "%Y-%m-%d"))) / 86400) + 1)
+              except Exception:
+                  return 1
 
 
           def main():
@@ -1516,6 +1688,11 @@ jobs:
                                       nd += 1
                                       continue
                                   alive.append((tk, meta[tk]))
+                                  if IS_CUP:
+                                      a_ = detect_accum(d, tk, code, minp, minvol)
+                                      if a_:
+                                          a_["name"] = meta[tk]
+                                          ACC.append(a_)
                                   nh_ = new_high(d, tk, code, minp, minvol)
                                   if nh_:
                                       nh_["name"] = meta[tk]
@@ -1755,9 +1932,11 @@ jobs:
                       l2 = gdf[gdf["verdict"] == "canslim"]
                   log(f"캔슬림 통과 {len(l2)}건")
 
-                  # ---------- 신고가 종목 (갭 리포트 전용) ----------
+                  # ---------- 신고가 종목 (갭 리포트 전용) · 조용한 매집 (컵 리포트 전용) ----------
                   if not IS_CUP:
                       build_new_highs()
+                  else:
+                      build_accum()
 
                   # 상위·★ 종목 중 아직 정보 없는 것만 추가 조회
                   star_tks = l1[l1["막돌파"] == True]["코드"].tolist()  # noqa: E712
@@ -1903,8 +2082,8 @@ jobs:
               else:
                   save_info()
 
-              if not IS_CUP and not len(res):
-                  build_new_highs()
+              if not len(res):
+                  build_new_highs() if not IS_CUP else build_accum()
               write_report(l1, l2, TOP30, COND_STAT, REG, stats, cut)
 
 
@@ -1974,6 +2153,27 @@ jobs:
                   x = np.arange(len(c))
                   fig, ax = plt.subplots(figsize=(3.9, 1.25) if big else (1.9, 0.55), dpi=170)
                   lw = 1.15 if big else 0.9
+                  if d.get("kind") == "acc":
+                      v = d["v"]; W = d["win"]
+                      lo, hi = float(np.min(c)), float(np.max(c))
+                      pad = (hi - lo) * 0.10 or 1
+                      vb = ax.twinx()
+                      cols = ["#c8890f" if i >= len(c) - W else "#b5b1aa" for i in range(len(c))]
+                      vb.bar(x, v, width=1.0, color=cols, alpha=0.55, lw=0)
+                      vb.set_ylim(0, float(np.max(v)) * 4.0)        # 막대는 아래 1/4 만 차지
+                      vb.axis("off")
+                      ax.axvspan(len(c) - W - 0.5, len(c) - 0.5, color="#c8890f", alpha=0.08, lw=0)
+                      ax.plot(x, c, color="#12355b", lw=lw)
+                      ax.set_zorder(vb.get_zorder() + 1); ax.patch.set_visible(False)
+                      base = lo - pad * 3                              # 선을 위쪽 2/3 에 두기
+                      ax.set_ylim(base, hi + pad)
+                      ax.set_xlim(-0.5, len(c) - 0.5)
+                      ax.axis("off")
+                      fig.subplots_adjust(0, 0, 1, 1)
+                      buf = io.BytesIO()
+                      fig.savefig(buf, format="png", transparent=True)
+                      plt.close(fig)
+                      return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
                   if d.get("kind") == "gap":
                       lo, hi = float(min(np.min(c), d["blo"])), float(max(np.max(c), d["bhi"]))
                   else:
@@ -2074,6 +2274,9 @@ jobs:
                   streak = r.get("연속일")
                   st = (f'<span class="pill st">{int(streak)}일째</span>'
                         if streak is not None and not pd.isna(streak) and streak > 1 else "")
+                  ad = accum_days(r["코드"]) if IS_CUP else 0
+                  if ad:
+                      st += f'<span class="pill acc">매집 {ad}일째</span>'
                   sec = r.get("섹터") or "미분류"
                   pt = r.get("투자포인트", "")
                   rows = "".join(f'<tr><td class="fk">{k}</td><td class="fv">{v}</td></tr>' for k, v in facts)
@@ -2150,6 +2353,50 @@ jobs:
           def _kday(stamp_ts):
               wd = "월화수목금토일"[time.gmtime(stamp_ts).tm_wday]
               return time.strftime("%Y년 %m월 %d일", time.gmtime(stamp_ts)) + f" ({wd})"
+
+
+          def h_acc_cards(df, per_row=3):
+              """조용한 매집 카드: 가격+거래량 차트, 핵심 숫자."""
+              if df is None or len(df) == 0:
+                  return '<p class="none">해당 없음</p>'
+              order = {"KR": 0, "US": 1, "JP": 2, "CN": 3, "HK": 4}
+              df = df.assign(_o=df["market"].map(order)).sort_values(["_o", "acc_score"], ascending=[True, False])
+              cards = []
+              for _, r in df.iterrows():
+                  src = mini_chart("acc:" + r["ticker"], big=True)
+                  sc = r["acc_score"]
+                  cls = "hi" if sc >= 75 else ("md" if sc >= 60 else "lo")
+                  tag = r["acc_tag"]
+                  tcls = "dist" if r["dist"] else ("hi" if tag == "강한 매집" else "md")
+                  sec = r.get("sector") or "미분류"
+                  days = int(r.get("acc_days", 1))
+                  facts = [("거래량", f'그 전 석 달의 <b>{r["acc_volx"]:.1f}배</b> · 2배 넘는 날 {int(r["acc_days2x"])}/{A["win"]}일'),
+                           ("한 달 가격", _pct(r["acc_chg"])),
+                           ("상승:하락 거래량", f'{r["acc_ud"]:.2f} : 1'),
+                           ("큰 날 종가 위치", f'{r["acc_clv"]*100:.0f}% <span class="mut">(100 = 고가)</span>'),
+                           ("직전 석 달", _pct(r["acc_prev"])),
+                           ("52주 고점 대비", _pct(-r["off52"]))]
+                  rows = "".join(f'<tr><td class="fk">{k}</td><td class="fv">{v}</td></tr>' for k, v in facts)
+                  mc = mcap_short(r.get("mcap"), r["market"])
+                  cards.append(
+                      f'<td class="cc"><div class="card a-acc{" a-dist" if r["dist"] else ""}">'
+                      f'<div class="c1"><span class="mk {r["market"].lower()}">{NAME.get(r["market"], r["market"])}</span>'
+                      f'<b>{_esc(r["name"])}</b><span class="code">{_esc(r["ticker"])}</span></div>'
+                      f'<div class="c2">{"<span class=" + chr(34) + "pill sct" + chr(34) + ">" + _esc(sec) + "</span>" if sec != "미분류" else ""}'
+                      f'<span class="pill shp {cls}">매집 {sc:.0f}<i>{_esc(tag)}</i></span>'
+                      + (f'<span class="pill st">{days}일째</span>' if days > 1 else "")
+                      + (f'<img class="big" src="{src}">' if src else '<div class="big"></div>')
+                      + f'<div class="c3"><span class="px">{fmt(r["last"])}</span>'
+                        f'<span class="pv">{"시총 " + mc if mc != "-" else ""}'
+                        f'{" · 주가강도 " + str(int(r["rs_pct"])) if pd.notna(r.get("rs_pct")) else ""}</span></div>'
+                      f'<table class="facts">{rows}</table>'
+                      '</div></td>')
+              out = []
+              for i in range(0, len(cards), per_row):
+                  row = cards[i:i + per_row]
+                  row += ['<td class="cc"></td>'] * (per_row - len(row))
+                  out.append('<table class="grid"><tr>' + "".join(row) + '</tr></table>')
+              return "".join(out)
 
 
           NUMC = {"모양점수", "현재가", "매수기준가", "기준가까지%", "컵깊이%", "손잡이%", "컵점수", "돌파후일수", "돌파거래량",
@@ -2317,6 +2564,8 @@ jobs:
               ".legend .tri{color:#166b45;margin:0 2px 0 6px}.legend .box{display:inline-block;width:12px;height:8px;"
               "background:#9a958c;opacity:.35;margin:0 3px 0 6px;vertical-align:middle}"
               ".legend .hb{display:inline-block;width:12px;height:8px;background:#c8890f;opacity:.3;margin:0 3px 0 6px;vertical-align:middle}"
+              ".legend .vb{display:inline-block;width:3px;height:9px;background:#c8890f;opacity:.6;margin:0 1px 0 6px;vertical-align:middle}"
+              ".legend .vg{display:inline-block;width:3px;height:6px;background:#b5b1aa;opacity:.7;margin:0 3px 0 1px;vertical-align:middle}"
               # ---- 섹션 ----
               "h2{font-size:12.5pt;margin:16px 0 4px;padding:0 0 4px;color:#12355b;border-bottom:2px solid #12355b;"
               "letter-spacing:-.3px}"
@@ -2334,6 +2583,10 @@ jobs:
               "td.cc{vertical-align:top;padding:0;border:none;width:33.33%}"
               ".card{border:1px solid #e3e0da;border-radius:4px;background:#fff;padding:8px 10px 7px;page-break-inside:avoid}"
               ".card.a-star{border-top:3px solid #c8890f}.card.a-top{border-top:3px solid #12355b}.card.a-nh{border-top:3px solid #5b7fa6}"
+              ".card.a-acc{border-top:3px solid #1a7a4f}.card.a-dist{border-top:3px solid #b5b1aa;background:#fbfaf8}"
+              ".pill.acc{background:#e4f2ea;color:#12603c;font-weight:700}.pill.shp.dist{background:#f3f2ef;color:#6b675f}"
+              "h2.acc{color:#166b45;border-bottom-color:#1a7a4f}h2.acc .n{background:#1a7a4f}"
+              "h3{font-size:9.6pt;color:#6b675f;margin:10px 0 4px;font-weight:700}"
               ".c1{font-size:10pt;white-space:nowrap;overflow:hidden;line-height:1.3}.c1 b{letter-spacing:-.2px}"
               ".c1 .code{color:#8d8880;font-size:7.6pt;margin-left:5px;font-weight:400}"
               ".mk.kr,.mk.us,.mk.jp,.mk.cn,.mk.hk{display:inline-block;font-size:6.8pt;font-weight:700;color:#fff;"
@@ -2351,7 +2604,7 @@ jobs:
               ".c3{margin:0 0 4px;white-space:nowrap}.c3 .px{font-size:13pt;font-weight:700;color:#12355b;letter-spacing:-.3px}"
               ".c3 .pv{font-size:7.7pt;color:#6b675f;margin-left:8px}"
               "table.facts{width:100%;border-collapse:collapse;margin:0}table.facts td{border:none;padding:1px 0;font-size:7.6pt;"
-              "border-top:1px solid #f1efeb}td.fk{color:#8d8880;width:64px}td.fv{color:#22201d;font-weight:600}"
+              "border-top:1px solid #f1efeb}td.fk{color:#8d8880;width:72px;white-space:nowrap}td.fv{color:#22201d;font-weight:600}"
               ".pt{border-top:1px dashed #e0dcd5;margin-top:5px;padding-top:4px;font-size:7.4pt;color:#5a564f;line-height:1.45}"
               ".up{color:#166b45}.dn{color:#a5322a}.mut{color:#9a958c;font-weight:400}.ok{color:#12603c;font-weight:700}"
               # ---- 표 ----
@@ -2455,6 +2708,19 @@ jobs:
                              f'기준가 −12% ~ +5% 또는 5일 내 돌파 · 컵 깊이 {P["nh_depth_max"]}% 이하 · '
                              f'컵 모양 점수 {SH["nh_min"]} 이상</p>')
                   H.append(h_cards(nh, accent="nh") if len(nh) <= 12 else h_country(nh, CFG["NH"]))
+              # ---- 조용한 매집 (컵) ----
+              if IS_CUP and len(ACL):
+                  g_, b_ = ACL[~ACL["dist"]], ACL[ACL["dist"]]
+                  H.append(h2("조용한 매집", f"{len(g_)}개" + (f" · 분배 의심 {len(b_)}개 별도" if len(b_) else ""), "acc")
+                           + f'<p class="note">최근 {A["win"]}거래일 평균 거래량이 그 전 {A["base"]}거래일의 {A["volx_min"]:.0f}배 이상인데 '
+                             f'가격은 {A["chg_lo"]:+.0f}% ~ {A["chg_hi"]:+.0f}% 안에 머문 종목 · 거래량 2배 넘는 날 {A["days2x_min"]}일 이상 · '
+                             f'52주 고점 −{A["off52_max"]:.0f}% 이내 · 매집점수 {A["show_min"]} 이상. '
+                             '누군가 한 달 내내 사고 있는데 가격이 안 움직이면 매물 흡수(와이코프) 구간일 수 있습니다. '
+                             '&nbsp;<b>차트</b><span class="sw"></span>종가 <span class="vg"></span>거래량 <span class="vb"></span>최근 한 달 거래량</p>')
+                  H.append(h_acc_cards(g_))
+                  if len(b_):
+                      H.append('<h3>분배 의심 — 거래량은 터졌지만 하락일 거래량이 더 많거나 급등 직후</h3>')
+                      H.append(h_acc_cards(b_))
               # ---- 신고가 (갭) ----
               if len(nhl):
                   H.append(h2("52주 신고가 종목", f"전체 {sum(NH_COUNT.values())}개 중 {len(nhl)}개", "nhh")
@@ -2553,6 +2819,22 @@ jobs:
                                "last": "현재가", "volx": "거래량배수", "chg5": "5일%", "rs_pct": "상대강도"})
                   md += by_country(t_, ["종목명", "코드", "섹터", "업종", "현재가", "신고가", "거래량배수", "5일%", "상대강도"],
                                    open_first=False)
+              if IS_CUP and len(ACL):
+                  g_, b_ = ACL[~ACL["dist"]], ACL[ACL["dist"]]
+                  md += ["", f"\n## 조용한 매집 {len(g_)}개 (분배 의심 {len(b_)}개 별도)\n",
+                         f"_최근 {A['win']}거래일 평균 거래량이 그 전 {A['base']}거래일의 {A['volx_min']:.0f}배 이상인데 "
+                         f"가격은 {A['chg_lo']:+.0f}% ~ {A['chg_hi']:+.0f}% 안에 머문 종목. 거래량 2배 넘는 날 {A['days2x_min']}일 이상 · "
+                         f"52주 고점 −{A['off52_max']:.0f}% 이내 · 매집점수 {A['show_min']} 이상. "
+                         "상승일 거래량이 하락일보다 많고 직전 석 달이 하락·횡보였으면 매집, 반대면 분배 의심._\n"]
+                  t_ = ACL.rename(columns={"name": "종목명", "ticker": "코드", "market": "시장", "sector": "섹터", "last": "현재가",
+                                           "acc_volx": "거래량배수", "acc_chg": "한달가격%", "acc_ud": "상승일거래량비",
+                                           "acc_prev": "직전3개월%", "acc_score": "매집점수", "acc_tag": "판정", "acc_days": "매집일째"})
+                  md += by_country(t_[~t_["dist"]], ["종목명", "코드", "섹터", "매집점수", "판정", "매집일째", "현재가", "거래량배수",
+                                                     "한달가격%", "상승일거래량비", "직전3개월%"], open_first=True)
+                  if len(b_):
+                      md += ["", "**분배 의심** (거래량은 터졌지만 하락일 거래량이 더 많거나 급등 뒤)\n"]
+                      md += by_country(t_[t_["dist"]], ["종목명", "코드", "섹터", "매집점수", "현재가", "거래량배수",
+                                                        "한달가격%", "상승일거래량비", "직전3개월%"], open_first=False)
               if globals().get("GONE"):
                   md.append(f"\n## 어제까지 있다가 빠진 종목 {len(GONE)}개\n")
                   md.append("_조건에서 이탈했습니다. 보유 중이면 확인해보세요._\n")
