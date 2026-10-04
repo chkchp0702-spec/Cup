@@ -1,5 +1,5 @@
 ﻿C,A,N,S,L,I,M,n_pass,verdict,name,ticker,market,last,pivot
-unknown,fail,pass,pass,pass,fail,unknown,3,fail,领先股份,603991.SS,CN,165.82,184.09
+unknown,fail,pass,pass,pass,fail,fail,3,fail,领先股份,603991.SS,CN,165.82,184.09
 pass,fail,pass,pass,pass,unknown,pass,5,fail,타이거일렉,219130.KQ,KR,92300.0,87987.9
 unknown,fail,pass,pass,pass,fail,pass,4,fail,TSE2962,2962.T,JP,2732.0,2408.41
 pass,fail,pass,pass,pass,unknown,pass,5,fail,뉴파워프라즈마,144960.KQ,KR,13200.0,13413.4
@@ -23,7 +23,7 @@ unknown,fail,pass,pass,fail,pass,pass,4,fail,TSE4021,4021.T,JP,8392.0,8715.71
 unknown,fail,pass,pass,fail,unknown,pass,3,fail,TSE4216,4216.T,JP,7150.0,7937.93
 unknown,pass,pass,pass,pass,unknown,pass,5,partial,TSE4417,4417.T,JP,5630.0,5935.93
 unknown,pass,pass,pass,pass,unknown,pass,5,partial,TSE6994,6994.T,JP,1360.0,1538.54
-unknown,fail,pass,pass,pass,fail,unknown,3,fail,先导基电,600641.SS,CN,48.57,52.63
+unknown,fail,pass,pass,pass,fail,fail,3,fail,先导基电,600641.SS,CN,48.57,52.63
 unknown,fail,pass,pass,fail,pass,pass,4,fail,TSE4114,4114.T,JP,2545.0,2728.23
 unknown,fail,pass,pass,fail,pass,pass,4,fail,TSE1982,1982.T,JP,3195.0,3473.47
 unknown,fail,pass,pass,pass,pass,pass,5,fail,TSE3105,3105.T,JP,2698.5,2696.69
@@ -120,7 +120,7 @@ pass,fail,pass,pass,fail,fail,pass,4,fail,Huron Consulting Group Inc. - Common S
 unknown,fail,pass,pass,fail,pass,pass,4,fail,TSE4041,4041.T,JP,3665.0,3893.89
 fail,fail,fail,pass,fail,fail,pass,2,fail,Liberty Media Corporation - Series A C,FWONA,US,83.39,92.17
 fail,fail,pass,pass,fail,fail,pass,3,fail,Essent Group Ltd. Common Shares,ESNT,US,60.22,65.13
-unknown,fail,pass,fail,fail,fail,unknown,1,fail,邮储银行,601658.SS,CN,5.46,5.98
+unknown,fail,pass,fail,fail,fail,fail,1,fail,邮储银行,601658.SS,CN,5.46,5.98
 unknown,fail,pass,pass,fail,fail,pass,3,fail,"Kestra Medical Technologies, Ltd. - Co",KMTS,US,27.43,27.74
 pass,fail,pass,pass,pass,unknown,pass,5,fail,티에스이,131290.KQ,KR,290500.0,294294.0
 unknown,fail,fail,pass,fail,fail,pass,2,fail,"CG Oncology, Inc. - Common stock",CGON,US,67.38,74.81
@@ -130,7 +130,7 @@ unknown,fail,pass,pass,fail,pass,pass,4,fail,TSE2871,2871.T,JP,2087.0,2180.68
 fail,fail,fail,pass,fail,fail,pass,2,fail,"CF Industries Holdings, Inc. Common St",CF,US,115.01,130.56
 unknown,fail,pass,pass,fail,pass,pass,4,fail,TSE4733,4733.T,JP,8180.0,8619.61
 unknown,fail,fail,pass,fail,pass,pass,3,fail,TSE9743,9743.T,JP,1388.0,1533.53
-unknown,fail,pass,pass,fail,pass,unknown,3,fail,成都银行,601838.SS,CN,19.31,19.24
+unknown,fail,pass,pass,fail,pass,fail,3,fail,成都银行,601838.SS,CN,19.31,19.24
 fail,fail,pass,pass,fail,fail,pass,3,fail,"Darden Restaurants, Inc. Common Stock",DRI,US,200.33,210.77
 fail,fail,pass,pass,fail,pass,pass,4,fail,Cintas Corporation - Common Stock,CTAS,US,193.02,209.93
 pass,fail,pass,pass,pass,unknown,pass,5,fail,Onto Innovation Inc. Common Stock,ONTO,US,327.77,354.19
