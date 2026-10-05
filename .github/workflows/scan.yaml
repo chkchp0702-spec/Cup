@@ -2,8 +2,8 @@ name: 컵앤핸들 스캔 v2
 
 on:
   schedule:                   # 두 번 걸어둠 — 첫 번째가 GitHub 사정으로 스킵되면 두 번째가 돈다
-    - cron: "7 18 * * 0-4"        # KST 03:07 월~금
-    - cron: "37 19 * * 0-4"        # KST 04:37 월~금 (예비)
+    - cron: "7 18 * * *"        # KST 03:07 매일
+    - cron: "37 19 * * *"        # KST 04:37 매일 (예비)
   workflow_dispatch:          # Actions 탭 → Run workflow 로 수동 실행
     inputs:
       check:
