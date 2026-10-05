@@ -180,7 +180,7 @@ jobs:
           #  모양 판정 — 숫자 몇 개가 아니라 컵 구간 전체를 이상적인 U자 그림과 비교
           # =============================================================================
           # --- 모양 판정: 컵 구간 전체를 이상적인 U자 그림과 직접 비교한다 ---
-          SH = dict(n=41, top_min=70, nh_min=70, star_min=60, list_min=55)   # 모양 강화(10/5): 전체 목록 55점+U자만, 상위·손잡이없음 70점, ★ 60점
+          SH = dict(n=41, top_min=70, nh_min=70, star_min=60, list_min=35)   # 10/5: 목록 35점 이상(느슨한 컵까지 들어오게) → 아침 "눈 검사"에서 사람 눈에 컵 아닌 건 뺀다. 상위 70, ★ 60
 
 
           def _tmpl(tt, m, k, r_end):
@@ -338,7 +338,7 @@ jobs:
 
 
           def keep_chart(tk, c, li, bi, ri, piv, he=None, bo_i=None):
-              st = max(0, li - 20)
+              st = max(0, li - 60)          # 컵 앞 석 달도 보여줘야 눈으로 '사전 상승'을 볼 수 있다
               CHART[tk] = dict(c=np.asarray(c[st:], dtype=np.float32), li=li - st, bi=bi - st, ri=ri - st,
                      he=None if he is None else he - st, bo=None if bo_i is None else bo_i - st,
                      piv=float(piv))
@@ -1811,8 +1811,8 @@ jobs:
                           return round(sc * 0.4 + r["shape"] * 0.6, 1)      # 모양 점수 60% 반영 (모양 우선)
                       res["score"] = res.apply(score, axis=1)
                       # ── 모양 강화: 둥근 U자 컵이 아닌 것(V자·급등·들쭉날쭉·덜회복)과 모양 점수 미달은 목록에서 뺀다
-                      shp_ok = (res["shape"] >= SH["list_min"]) & (res["shape_tag"] == "U자")
-                      log(f"  모양 미달(U자·{SH['list_min']}점 미만) 제외 {int((~shp_ok).sum())}종목 → {int(shp_ok.sum())}종목")
+                      shp_ok = (res["shape"] >= SH["list_min"])
+                      log(f"  모양 {SH['list_min']}점 미만 제외 {int((~shp_ok).sum())}종목 → {int(shp_ok.sum())}종목 (최종 선별은 아침 눈 검사)")
                       res = res[shp_ok].reset_index(drop=True)
                       res = res.sort_values(["fresh", "actionable", "ath_piv_off"],
                                             ascending=[False, False, True]).reset_index(drop=True)
@@ -2084,6 +2084,19 @@ jobs:
                   l1 = l1[cols]
                   l1.to_csv(CFG["list1"], index=False, encoding="utf-8-sig")
                   l1[l1["막돌파"] == True].to_csv(CFG["list0"], index=False, encoding="utf-8-sig")  # noqa
+                  # ── 사람 눈 확인용 차트 자료 (아침 '눈 검사' 작업이 이걸로 그림을 그려 본다)
+                  try:
+                      _cj = {}
+                      for _tk in l1["코드"].astype(str):
+                          _d = CHART.get(_tk)
+                          if not _d:
+                              continue
+                          _cj[_tk] = {k: ([round(float(x), 4) for x in v] if hasattr(v, "__len__") and not isinstance(v, str) else v)
+                                      for k, v in _d.items()}
+                      json.dump(_cj, open(f"results/charts_{MODE}.json", "w", encoding="utf-8"), separators=(",", ":"))
+                      log(f"눈 검사용 차트 {len(_cj)}종목 저장")
+                  except Exception as _e:
+                      log(f"차트 저장 실패 {_e}")
                   log(f"섹터 확인 {int((l1['섹터'] != '미분류').sum())}/{len(l1)}종목")
               else:
                   save_info()
@@ -2118,7 +2131,7 @@ jobs:
                       "기준가까지%", "컵깊이%", "컵기간주", "투자포인트"],
                   NH=["NEW", "종목명", "코드", "차트", "모양점수", "섹터", "현재가", "매수기준가", "기준가까지%",
                       "컵깊이%", "컵기간주", "돌파일", "돌파거래량", "매집강도", "현재가_최고가대비%", "투자포인트"],
-                  score="컵점수", foot=f"윌리엄 오닐 컵앤핸들·캔슬림 기준 자동 스캔 결과. 모양 우선: 둥근 U자 컵 · 모양 점수 {SH['list_min']}점 이상만 목록에 올리고, 컵 점수의 60%를 모양으로 매깁니다.")
+                  score="컵점수", foot=f"윌리엄 오닐 컵앤핸들·캔슬림 기준 자동 스캔 결과. 모양 점수 {SH['list_min']}점 이상을 1차로 올리고, 아침에 차트를 눈으로 보고 컵이 아닌 종목을 뺍니다. 컵 점수의 60%는 모양.")
           else:
               CFG = dict(
                   title="갭 돌파 리스트", issue="갭 돌파",
