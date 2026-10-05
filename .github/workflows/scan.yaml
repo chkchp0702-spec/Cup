@@ -213,13 +213,13 @@ jobs:
               tt = np.linspace(0, 1, SH["n"])
               yy = np.interp(tt, np.linspace(0, 1, L), y)
               m = float(np.clip(tt[int(np.argmin(yy))], 0.15, 0.85))
-              r_end = float(np.clip((seg[-1] - bot) / (top - bot), 0, 1.2))
+              r_end = float(np.clip((max(seg[-3:]) - bot) / (top - bot), 0, 1.2))   # 우측 끝: 마지막 사흘 중 최고 종가 (하루 눌림에 '덜회복'이 안 되게)
               l_end = float(np.clip((seg[0] - bot) / (top - bot), 0, 1.2))
               yy[0], yy[-1] = l_end, r_end
               yy_n = yy.copy()
               yy_n[tt < m] = yy[tt < m] / max(l_end, 1e-6)          # 왼쪽 끝을 1로 맞춘다
               rm = lambda k: float(np.sqrt(np.mean((yy_n - _tmpl(tt, m, k, r_end)) ** 2)))
-              rU = min(rm(2), rm(3))
+              rU = min(rm(1.5), rm(2), rm(3))      # 1.5 = 옆면이 꽤 곧지만 바닥은 둥근 컵도 U로 인정
               rV = rm(1)
 
               fit = float(np.clip(1 - rU / 0.22, 0, 1)) * 40
@@ -251,9 +251,11 @@ jobs:
 
               sc = fit + smooth + bottom + sym
               tag = "U자"
-              if rV < rU * 0.9:
+              if rV < rU * 0.9 and low_frac < 0.20:      # 진짜 V = 바닥에 머문 시간이 거의 없을 때만
                   sc -= 25
                   tag = "V자"
+              elif rV < rU * 0.9:                        # 옆면은 곧아도 바닥권에 20% 이상 머물렀으면 둥근 컵으로 본다
+                  sc -= 5
               if eff < 0.40:
                   tag = "들쭉날쭉"
               elif tag == "U자" and ris_f < 0.10:
