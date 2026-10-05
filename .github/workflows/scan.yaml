@@ -180,7 +180,7 @@ jobs:
           #  모양 판정 — 숫자 몇 개가 아니라 컵 구간 전체를 이상적인 U자 그림과 비교
           # =============================================================================
           # --- 모양 판정: 컵 구간 전체를 이상적인 U자 그림과 직접 비교한다 ---
-          SH = dict(n=41, top_min=65, nh_min=65, star_min=45)   # 상위·손잡이없음 65점, ★ 45점
+          SH = dict(n=41, top_min=70, nh_min=70, star_min=60, list_min=55)   # 모양 강화(10/5): 전체 목록 55점+U자만, 상위·손잡이없음 70점, ★ 60점
 
 
           def _tmpl(tt, m, k, r_end):
@@ -1784,7 +1784,7 @@ jobs:
                                     and not r["newly"])
                           return pd.Series([round(hi, 2), round(piv_off, 1), round(over, 1), ok])
                       res[["ath", "ath_piv_off", "ath_over", "ath_ok"]] = res.apply(_ath, axis=1)
-                      res["fresh"] = res["fresh_raw"] & res["ath_ok"] & (res["shape"] >= SH["star_min"])
+                      res["fresh"] = res["fresh_raw"] & res["ath_ok"] & (res["shape"] >= SH["star_min"]) & (res["shape_tag"] == "U자")
                       lim = P["list1_ath_max"] * 100
                       keep = res["ath_piv_off"].isna() | (res["ath_piv_off"] <= lim)
                       if int((~keep).sum()):
@@ -1806,8 +1806,12 @@ jobs:
                           a = r["ath_piv_off"]
                           sc += 3 if pd.isna(a) else (12 if a <= 5 else (8 if a <= 15 else 3))
                           sc += 8 if r["up"] >= 50 else 4
-                          return round(sc * 0.6 + r["shape"] * 0.4, 1)      # 모양 점수 40% 반영
+                          return round(sc * 0.4 + r["shape"] * 0.6, 1)      # 모양 점수 60% 반영 (모양 우선)
                       res["score"] = res.apply(score, axis=1)
+                      # ── 모양 강화: 둥근 U자 컵이 아닌 것(V자·급등·들쭉날쭉·덜회복)과 모양 점수 미달은 목록에서 뺀다
+                      shp_ok = (res["shape"] >= SH["list_min"]) & (res["shape_tag"] == "U자")
+                      log(f"  모양 미달(U자·{SH['list_min']}점 미만) 제외 {int((~shp_ok).sum())}종목 → {int(shp_ok.sum())}종목")
+                      res = res[shp_ok].reset_index(drop=True)
                       res = res.sort_values(["fresh", "actionable", "ath_piv_off"],
                                             ascending=[False, False, True]).reset_index(drop=True)
                       D = P["top_dist"]
@@ -1819,7 +1823,7 @@ jobs:
                                (f"컵 깊이 {P['top_depth_max']}% 이하", res["depth"] <= P["top_depth_max"]),
                                (f"베이스 {P['top_weeks_min']}~{P['top_weeks_max']}주",
                                 (res["weeks"] >= P["top_weeks_min"]) & (res["weeks"] <= P["top_weeks_max"])),
-                               (f"컵 모양 점수 {SH['top_min']} 이상", res["shape"] >= SH["top_min"]),
+                               (f"컵 모양 점수 {SH['top_min']} 이상 (U자)", res["shape"] >= SH["top_min"]),
                                (f"손잡이 거래량 {P['top_hvol_max']:.2f}배 이하", res["hvol"] <= P["top_hvol_max"])]
                       if "acc" not in res.columns:
                           res["acc"] = np.nan
@@ -2112,7 +2116,7 @@ jobs:
                       "기준가까지%", "컵깊이%", "컵기간주", "투자포인트"],
                   NH=["NEW", "종목명", "코드", "차트", "모양점수", "섹터", "현재가", "매수기준가", "기준가까지%",
                       "컵깊이%", "컵기간주", "돌파일", "돌파거래량", "매집강도", "현재가_최고가대비%", "투자포인트"],
-                  score="컵점수", foot="윌리엄 오닐 컵앤핸들·캔슬림 기준 자동 스캔 결과.")
+                  score="컵점수", foot=f"윌리엄 오닐 컵앤핸들·캔슬림 기준 자동 스캔 결과. 모양 우선: 둥근 U자 컵 · 모양 점수 {SH['list_min']}점 이상만 목록에 올리고, 컵 점수의 60%를 모양으로 매깁니다.")
           else:
               CFG = dict(
                   title="갭 돌파 리스트", issue="갭 돌파",
