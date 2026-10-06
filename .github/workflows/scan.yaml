@@ -1813,9 +1813,9 @@ jobs:
                           return round(sc * 0.4 + r["shape"] * 0.6, 1)      # 모양 점수 60% 반영 (모양 우선)
                       res["score"] = res.apply(score, axis=1)
                       # ── 모양 강화: 둥근 U자 컵이 아닌 것(V자·급등·들쭉날쭉·덜회복)과 모양 점수 미달은 목록에서 뺀다
-                      # 10/6: 범위 넓히기 — 모양 점수가 낮아도 '주도주가 고점 근처에서 쉬는' 컵 후보는 남긴다
+                      # 10/6: 범위 넓히기 — 모양 점수가 낮아도 '주도주(상대강도 70↑, 엔비디아 같은 거대 주도주 포함)가 고점 근처에서 쉬는' 컵 후보는 남긴다
                       #   (엔비디아처럼 오른쪽이 빨리 올라와 '급등' 감점으로 0점이 된 경우). 최종 선별은 아침 눈 검사.
-                      lead_ok = ((res["rs_pct"] >= 85) & (res["dist"] >= -10) & (res["dist"] <= 10)
+                      lead_ok = ((res["rs_pct"] >= 70) & (res["dist"] >= -10) & (res["dist"] <= 10)
                                  & (res["ath_piv_off"].fillna(99) <= 25))
                       shp_ok = (res["shape"] >= SH["list_min"]) | lead_ok
                       log(f"  모양 {SH['list_min']}점 미만 제외 {int((~shp_ok).sum())}종목 → {int(shp_ok.sum())}종목 (주도주 예외 {int((lead_ok & (res['shape'] < SH['list_min'])).sum())}) (최종 선별은 아침 눈 검사)")
