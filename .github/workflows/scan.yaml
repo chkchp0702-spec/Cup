@@ -144,7 +144,7 @@ jobs:
           log = lambda m: print(f"[{(time.time()-T0)/60:5.1f}분] {m}", flush=True)
 
           # --- 컵앤핸들 파라미터 (오닐) -------------------------------------------------
-          P = dict(up=0.15, lb=300, dmin=15, dmax=400, depth_lo=.06, depth_hi=.75,   # 10/7 범위 확대 (최종 선별은 아침 눈 검사)
+          P = dict(up=0.15, lb=250, dmin=20, dmax=400, depth_lo=.06, depth_hi=.75,   # 10/7 범위 확대 (최종 선별은 아침 눈 검사)
                    rim=.13, rnd=.09, rnd_bars=4, dec_lo=.15, dec_hi=.82, dec_days=7,
                    h_lo=3, h_hi=50, hd_lo=.01, hd_hi=.18, hvol=1.05, buf=.001,
                    nh_rim=.15,        # 손잡이 없는 컵: 우측이 좌측 고점 -12% 이내까지 회복해야
