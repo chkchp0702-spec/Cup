@@ -144,13 +144,13 @@ jobs:
           log = lambda m: print(f"[{(time.time()-T0)/60:5.1f}분] {m}", flush=True)
 
           # --- 컵앤핸들 파라미터 (오닐) -------------------------------------------------
-          P = dict(up=0.20, lb=250, dmin=20, dmax=350, depth_lo=.08, depth_hi=.70,
-                   rim=.10, rnd=.09, rnd_bars=4, dec_lo=.15, dec_hi=.82, dec_days=7,
+          P = dict(up=0.15, lb=300, dmin=15, dmax=400, depth_lo=.06, depth_hi=.75,   # 10/7 범위 확대 (최종 선별은 아침 눈 검사)
+                   rim=.13, rnd=.09, rnd_bars=4, dec_lo=.15, dec_hi=.82, dec_days=7,
                    h_lo=3, h_hi=50, hd_lo=.01, hd_hi=.18, hvol=1.05, buf=.001,
-                   nh_rim=.12,        # 손잡이 없는 컵: 우측이 좌측 고점 -12% 이내까지 회복해야
+                   nh_rim=.15,        # 손잡이 없는 컵: 우측이 좌측 고점 -12% 이내까지 회복해야
                    nh_stale=50,       # 회복 후 이 일수 안에 못 뚫으면 패턴 무효 (박스로 변질)
                    nh_bo_max=60,      # 돌파 후 60일 넘은 건 제외
-                   piv52_max=0.30, ath_piv_max=0.15, ath_over_max=0.08, list1_ath_max=0.60,
+                   piv52_max=0.38, ath_piv_max=0.15, ath_over_max=0.08, list1_ath_max=0.70,
                    top_ath_max=0.15, top_rs_min=65, top_depth_max=50, top_weeks_max=50,
                    top_weeks_min=6,      # 6주 미만은 컵이 아니라 짧은 눌림
                    nh_depth_max=50,      # 손잡이 없는 컵 목록: 깊이 50% 초과는 폭락 후 반등
@@ -182,7 +182,7 @@ jobs:
           #  모양 판정 — 숫자 몇 개가 아니라 컵 구간 전체를 이상적인 U자 그림과 비교
           # =============================================================================
           # --- 모양 판정: 컵 구간 전체를 이상적인 U자 그림과 직접 비교한다 ---
-          SH = dict(n=41, top_min=70, nh_min=70, star_min=60, list_min=35)   # 10/5: 목록 35점 이상(느슨한 컵까지 들어오게) → 아침 "눈 검사"에서 사람 눈에 컵 아닌 건 뺀다. 상위 70, ★ 60
+          SH = dict(n=41, top_min=70, nh_min=70, star_min=60, list_min=25)   # 10/7: 목록 25점까지 (더 넓게)    # 10/5: 목록 35점 이상(느슨한 컵까지 들어오게) → 아침 "눈 검사"에서 사람 눈에 컵 아닌 건 뺀다. 상위 70, ★ 60
 
 
           def _tmpl(tt, m, k, r_end):
@@ -1817,10 +1817,10 @@ jobs:
                       #   (엔비디아처럼 오른쪽이 빨리 올라와 '급등' 감점으로 0점이 된 경우). 최종 선별은 아침 눈 검사.
                       #   거대 주도주(엔비디아)는 상대강도 순위가 소형 급등주보다 낮게 나오므로, 사상최고가 10% 안이면 상대강도 50부터 인정.
                       #   사용자 기준선 종목(REF)은 패턴만 잡히면 항상 1차 목록에 → 눈 검사에서 본다.
-                      REF = {"NVDA", "036930.KQ", "446540.KQ"}
+                      REF = {"NVDA", "036930.KQ", "446540.KQ", "000500.KS"}   # 10/7 가온전선 = 사용자 판정 컵
                       ath_ = res["ath_piv_off"].fillna(99)
-                      lead_ok = (((res["dist"] >= -10) & (res["dist"] <= 10)
-                                  & (((res["rs_pct"] >= 70) & (ath_ <= 25)) | ((res["rs_pct"] >= 50) & (ath_ <= 10))))
+                      lead_ok = (((res["dist"] >= -15) & (res["dist"] <= 15)
+                                  & (((res["rs_pct"] >= 65) & (ath_ <= 30)) | ((res["rs_pct"] >= 45) & (ath_ <= 12))))
                                  | res["ticker"].isin(REF))
                       shp_ok = (res["shape"] >= SH["list_min"]) | lead_ok
                       log(f"  모양 {SH['list_min']}점 미만 제외 {int((~shp_ok).sum())}종목 → {int(shp_ok.sum())}종목 (주도주 예외 {int((lead_ok & (res['shape'] < SH['list_min'])).sum())}) (최종 선별은 아침 눈 검사)")
