@@ -802,7 +802,7 @@ jobs:
               return r
 
 
-          def detect_cup_any(df, tk, mkt, minp, minvol=0, why=None):
+          def _cup_any1(df, tk, mkt, minp, minvol=0, why=None):
               r = detect_cup(df, tk, mkt, minp, minvol, why=why)
               if r:
                   return r
@@ -810,6 +810,19 @@ jobs:
               if r:
                   return r
               return detect_cup_nh(df, tk, mkt, minp, minvol, why=why)
+
+
+          # 10/7: 넓힌 범위가 예전에 잡던 컵(엔비디아 등)을 다른 그릇으로 바꿔 잡아 놓치지 않게 —
+          #       예전(좁은) 기준으로 먼저 보고, 거기서 못 잡은 종목만 넓은 기준으로 다시 본다 → 예전 목록 + 새로 넓힌 것
+          P_NARROW = dict(up=0.20, dmin=20, dmax=350, depth_lo=.08, depth_hi=.70, rim=.10, nh_rim=.12, piv52_max=0.30)
+          def detect_cup_any(df, tk, mkt, minp, minvol=0, why=None):
+              wide = {k: P[k] for k in P_NARROW}
+              P.update(P_NARROW)
+              try:
+                  r = _cup_any1(df, tk, mkt, minp, minvol, why=why)
+              finally:
+                  P.update(wide)
+              return r if r else _cup_any1(df, tk, mkt, minp, minvol, why=why)
 
 
           detect = detect_cup_any if IS_CUP else detect_gap
