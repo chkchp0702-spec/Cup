@@ -145,7 +145,7 @@ jobs:
 
           # --- 컵앤핸들 파라미터 (오닐) -------------------------------------------------
           P = dict(up=0.15, lb=250, dmin=20, dmax=400, depth_lo=.06, depth_hi=.75,   # 10/7 범위 확대 (최종 선별은 아침 눈 검사)
-                   rim=.13, rnd=.09, rnd_bars=4, dec_lo=.15, dec_hi=.82, dec_days=7,
+                   rim=.13, rec=.75, rnd=.09, rnd_bars=4, dec_lo=.15, dec_hi=.82, dec_days=7,
                    h_lo=3, h_hi=50, hd_lo=.01, hd_hi=.18, hvol=1.05, buf=.001,
                    nh_rim=.15,        # 손잡이 없는 컵: 우측이 좌측 고점 -12% 이내까지 회복해야
                    nh_stale=50,       # 회복 후 이 일수 안에 못 뚫으면 패턴 무효 (박스로 변질)
@@ -410,7 +410,10 @@ jobs:
                   if not (P["depth_lo"] <= depth <= P["depth_hi"]):
                       W(li, f"컵 깊이 {depth*100:.0f}% (허용 {P['depth_lo']*100:.0f}~{P['depth_hi']*100:.0f}%)")
                       continue
-                  touch = next((j for j in range(bi + 1, se) if h[j] >= lv * (1 - P["rim"])), None)
+                  # 10/15 사용자 「애플 컵 같은데 왜 아니니?」 — 컵 깊이(11%)가 rim(13%)보다 얕으면 바닥 다음 날 바로 「회복」으로 쳐서 컵 3일이 됐음
+                  #   → 우측은 좌측 고점 -rim 이내 AND 깊이의 75% 이상 되찾아야 회복
+                  rec = max(lv * (1 - P["rim"]), bv + (lv - bv) * P["rec"])
+                  touch = next((j for j in range(bi + 1, se) if h[j] >= rec), None)
                   if touch is None:
                       W(li, f"바닥 후 좌측 고점 -{P['rim']*100:.0f}% 까지 회복 못함 (아직 컵 우측이 안 올라옴)")
                       continue
@@ -722,7 +725,7 @@ jobs:
                   if not (P["depth_lo"] <= depth <= P["depth_hi"]):
                       W(li, f"컵 깊이 {depth*100:.0f}% (허용 {P['depth_lo']*100:.0f}~{P['depth_hi']*100:.0f}%)")
                       continue
-                  touch = next((j for j in range(bi + 1, n) if h[j] >= lv * (1 - P["nh_rim"])), None)
+                  touch = next((j for j in range(bi + 1, n) if h[j] >= max(lv * (1 - P["nh_rim"]), bv + (lv - bv) * P["rec"])), None)   # 10/15 얕은 컵 보정
                   if touch is None:
                       W(li, f"우측이 좌측 고점 -{P['nh_rim']*100:.0f}% 까지 아직 회복 못함 (현재 {(1-last/lv)*100:.0f}% 아래)")
                       continue
