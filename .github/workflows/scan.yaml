@@ -437,7 +437,10 @@ jobs:
                   if rnd < P["rnd"] or int(rnd * len(cc)) < P["rnd_bars"]:
                       W(li, f"V자 모양 — 바닥권 체류 {rnd*100:.0f}% ({int(rnd*len(cc))}일), 최소 {P['rnd']*100:.0f}%·{P['rnd_bars']}일")
                       continue
-                  dd = bi - li
+                  # 10/15 애플: 실적 날 이틀 급락 뒤 한 달 바닥을 다진 컵 — 「가장 낮은 하루」가 아니라 바닥권(하위 1/3) 날들의 가운데를 바닥으로 봄
+                  bz = [j for j in range(li, ri + 1) if l[j] <= bv + (lv - bv) * .33] if ri > li else []
+                  bc = int(np.median(bz)) if bz else bi
+                  dd = max(bi, bc) - li
                   if dd < P["dec_days"] or not (P["dec_lo"] <= dd / cd <= P["dec_hi"]):
                       W(li, f"하락 구간 비율 {dd/cd*100:.0f}% 또는 하락 {dd}일 — 비대칭 컵")
                       continue
@@ -739,7 +742,10 @@ jobs:
                   if rnd < P["rnd"] or int(rnd * len(cc)) < P["rnd_bars"]:
                       W(li, f"V자 모양 — 바닥권 체류 {rnd*100:.0f}%")
                       continue
-                  dd = bi - li
+                  # 10/15 애플: 실적 날 이틀 급락 뒤 한 달 바닥을 다진 컵 — 「가장 낮은 하루」가 아니라 바닥권(하위 1/3) 날들의 가운데를 바닥으로 봄
+                  bz = [j for j in range(li, touch + 1) if l[j] <= bv + (lv - bv) * .33] if touch > li else []
+                  bc = int(np.median(bz)) if bz else bi
+                  dd = max(bi, bc) - li
                   if dd < P["dec_days"] or not (P["dec_lo"] <= dd / cd <= P["dec_hi"]):
                       W(li, f"하락 구간 비율 {dd/cd*100:.0f}% — 비대칭")
                       continue
