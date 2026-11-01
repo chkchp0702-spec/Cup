@@ -1,5 +1,6 @@
 ﻿C,A,N,S,L,I,M,n_pass,verdict,name,ticker,market,last,pivot
 unknown,fail,pass,pass,fail,pass,fail,3,fail,Imperial Oil Limited Common Stock,IMO,US,138.1,137.02
+fail,fail,pass,pass,fail,pass,fail,3,fail,Fortis Inc. Common Shares,FTS,US,58.67,58.12
 unknown,fail,pass,pass,pass,pass,fail,4,fail,TSE7504,7504.T,JP,5180.0,5205.2
 unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE7821,7821.T,JP,2114.0,2075.07
 fail,fail,pass,pass,fail,pass,fail,3,fail,TSE2801,2801.T,JP,1803.0,1846.84
@@ -28,7 +29,7 @@ fail,fail,pass,pass,pass,unknown,fail,3,fail,지니언스,263860.KQ,KR,27750.0,3
 fail,fail,pass,pass,fail,pass,fail,3,fail,"United Bankshares, Inc. - Common Stock",UBSI,US,48.22,49.3
 fail,fail,pass,pass,fail,fail,fail,2,fail,"Customers Bancorp, Inc Common Stock",CUBI,US,84.16,87.51
 pass,fail,pass,pass,pass,pass,fail,5,fail,Suncor Energy  Inc. Common Stock,SU,US,79.42,79.73
-pass,fail,pass,pass,fail,unknown,fail,3,fail,Amalgamated Financial Corp. - Common S,AMAL,US,50.06,51.92
+pass,fail,pass,pass,fail,unknown,fail,3,fail,Amalgamated Financial Corp. - Common S,AMAL,US,50.07,51.92
 unknown,fail,pass,pass,pass,pass,fail,4,fail,TSE3097,3097.T,JP,5980.0,6156.15
 pass,fail,pass,pass,pass,pass,fail,5,fail,ConocoPhillips Common Stock,COP,US,154.03,152.92
 pass,fail,pass,pass,fail,pass,fail,4,fail,Pembina Pipeline Corp. Ordinary Shares,PBA,US,51.36,51.11
@@ -48,14 +49,13 @@ unknown,fail,pass,pass,pass,unknown,fail,3,fail,TSE8037,8037.T,JP,4995.0,5205.2
 fail,fail,pass,pass,fail,pass,fail,3,fail,Nordson Corporation - Common Stock,NDSN,US,322.67,333.26
 unknown,pass,pass,pass,fail,pass,fail,4,fail,TSE6741,6741.T,JP,1771.0,1904.9
 fail,fail,pass,pass,fail,pass,fail,3,fail,"Business First Bancshares, Inc. - Comm",BFST,US,31.8,31.9
-fail,fail,pass,pass,fail,fail,fail,2,fail,"CACI International, Inc. Class A Commo",CACI,US,675.62,675.11
 fail,fail,pass,pass,fail,pass,fail,3,fail,Bank Nova Scotia Halifax Pfd 3 Ordinar,BNS,US,93.76,94.28
+fail,fail,pass,pass,fail,fail,fail,2,fail,"CACI International, Inc. Class A Commo",CACI,US,675.62,675.11
 fail,fail,pass,pass,fail,pass,fail,3,fail,GFL Environmental Inc. Subordinate vot,GFL,US,45.21,50.94
 unknown,fail,pass,pass,fail,fail,fail,2,fail,"Southwest Gas Holdings, Inc. Common St",SWX,US,93.08,93.57
 unknown,fail,pass,fail,fail,pass,fail,2,fail,CITIC BANK,0998.HK,HK,8.69,8.58
 fail,fail,pass,pass,fail,pass,fail,3,fail,TSE4212,4212.T,JP,2784.0,3113.11
 fail,fail,pass,pass,fail,fail,fail,2,fail,Essent Group Ltd. Common Shares,ESNT,US,67.02,68.83
-fail,fail,pass,pass,fail,pass,fail,3,fail,Fortis Inc. Common Shares,FTS,US,58.67,58.12
 unknown,fail,pass,pass,pass,pass,fail,4,fail,TSE1899,1899.T,JP,4870.0,5025.02
 unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE8015,8015.T,JP,6772.0,7627.62
 unknown,pass,pass,pass,fail,pass,fail,4,fail,TSE4373,4373.T,JP,1166.0,1281.28
