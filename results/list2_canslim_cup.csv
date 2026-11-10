@@ -1,151 +1,151 @@
 ﻿C,A,N,S,L,I,M,n_pass,verdict,name,ticker,market,last,pivot
-fail,fail,pass,pass,fail,pass,fail,3,fail,"WEC Energy Group, Inc. Common Stock",WEC,US,117.15,117.46
-fail,fail,pass,pass,fail,fail,fail,2,fail,Pinnacle West Capital Corporation Comm,PNW,US,105.26,106.88
-fail,fail,pass,pass,fail,pass,fail,3,fail,Duke Energy Corporation (Holding Compa,DUK,US,128.1,128.89
-unknown,pass,pass,pass,fail,fail,fail,3,fail,"Cencora, Inc. Common Stock",COR,US,345.76,345.81
-fail,fail,pass,pass,fail,fail,fail,2,fail,Flowserve Corporation Common Stock,FLS,US,85.83,83.11
-fail,pass,pass,pass,pass,fail,fail,4,fail,"Frontdoor, Inc. - Common Stock",FTDR,US,100.73,93.52
-unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE7821,7821.T,JP,2304.0,2075.07
+fail,fail,pass,pass,fail,pass,fail,3,fail,"WEC Energy Group, Inc. Common Stock",WEC,US,117.01,117.46
+fail,fail,pass,pass,fail,fail,fail,2,fail,Pinnacle West Capital Corporation Comm,PNW,US,105.96,106.88
+fail,fail,pass,pass,fail,pass,fail,3,fail,Duke Energy Corporation (Holding Compa,DUK,US,128.94,128.89
+unknown,pass,pass,pass,fail,fail,fail,3,fail,"Cencora, Inc. Common Stock",COR,US,348.71,345.81
+fail,fail,pass,pass,fail,fail,fail,2,fail,Flowserve Corporation Common Stock,FLS,US,85.66,83.11
+unknown,fail,pass,pass,fail,unknown,fail,2,fail,TSE2264,2264.T,JP,1207.5,1172.17
+fail,pass,pass,pass,pass,fail,fail,4,fail,"Frontdoor, Inc. - Common Stock",FTDR,US,98.5,93.52
 fail,fail,pass,pass,pass,pass,fail,4,fail,롯데렌탈,089860.KS,KR,58400.0,53153.1
 fail,fail,pass,pass,pass,unknown,fail,3,fail,가비아,079940.KQ,KR,49350.0,51251.2
-fail,pass,pass,pass,pass,pass,fail,5,fail,Aveanna Healthcare Holdings Inc. - Com,AVAH,US,13.2,14.72
-fail,fail,pass,pass,fail,pass,fail,3,fail,City Holding Company - Common Stock,CHCO,US,143.09,149.14
-pass,fail,pass,pass,fail,pass,fail,4,fail,Principal Financial Group Inc - Common,PFG,US,115.39,121.3
-fail,fail,pass,pass,fail,pass,fail,3,fail,"QCR Holdings, Inc. - Common Stock",QCRH,US,103.26,108.22
-fail,fail,pass,pass,fail,pass,fail,3,fail,Ameren Corporation Common Stock,AEE,US,114.02,118.44
-unknown,fail,pass,pass,pass,pass,fail,4,fail,"Guardian Pharmacy Services, Inc. Class",GRDN,US,47.02,48.38
-fail,fail,pass,pass,pass,pass,fail,4,fail,"Merck & Company, Inc. Common Stock (ne",MRK,US,148.76,157.08
-fail,fail,pass,pass,fail,pass,fail,3,fail,"German American Bancorp, Inc. - Common",GABC,US,50.44,52.28
+fail,pass,pass,pass,pass,pass,fail,5,fail,Aveanna Healthcare Holdings Inc. - Com,AVAH,US,13.19,14.72
+fail,fail,pass,pass,fail,pass,fail,3,fail,City Holding Company - Common Stock,CHCO,US,142.59,149.14
+fail,unknown,pass,pass,fail,unknown,fail,2,fail,Cincinnati Financial Corporation - Com,CINF,US,189.89,195.92
+unknown,fail,pass,pass,pass,fail,fail,3,fail,"Edgewise Therapeutics, Inc. - Common S",EWTX,US,46.53,48.83
+pass,fail,pass,pass,fail,pass,fail,4,fail,Principal Financial Group Inc - Common,PFG,US,115.99,121.3
+fail,fail,pass,pass,fail,pass,fail,3,fail,"QCR Holdings, Inc. - Common Stock",QCRH,US,102.99,108.22
+fail,fail,pass,pass,fail,pass,fail,3,fail,Ameren Corporation Common Stock,AEE,US,113.68,118.44
+fail,fail,pass,pass,pass,pass,fail,4,fail,"Merck & Company, Inc. Common Stock (ne",MRK,US,148.05,157.08
+fail,fail,pass,pass,fail,pass,fail,3,fail,"German American Bancorp, Inc. - Common",GABC,US,50.12,52.28
 unknown,fail,pass,pass,fail,pass,fail,3,fail,JNBY,3306.HK,HK,22.82,23.62
-fail,fail,pass,pass,fail,fail,fail,2,fail,"CNO Financial Group, Inc. Common Stock",CNO,US,57.16,59.0
-unknown,fail,pass,pass,fail,pass,fail,3,fail,"Equity Bancshares, Inc. Class A Common",EQBK,US,49.37,52.1
-fail,fail,pass,pass,fail,fail,fail,2,fail,Jones Lang LaSalle Incorporated Common,JLL,US,380.07,394.23
-unknown,fail,pass,pass,pass,fail,fail,3,fail,"Edgewise Therapeutics, Inc. - Common S",EWTX,US,48.74,48.56
-fail,fail,pass,pass,pass,pass,fail,4,fail,"Safety Insurance Group, Inc. - Common ",SAFT,US,104.4,103.85
-fail,fail,pass,pass,fail,pass,fail,3,fail,Camden National Corporation - Common S,CAC,US,58.73,60.65
-fail,fail,pass,pass,fail,pass,fail,3,fail,Mercantile Bank Corporation - Common S,MBWM,US,61.63,63.01
-unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE2503,2503.T,JP,3121.0,3181.18
-fail,fail,pass,pass,pass,pass,fail,4,fail,Amalgamated Financial Corp. - Common S,AMAL,US,50.53,51.92
-fail,fail,pass,pass,fail,fail,fail,2,fail,NCR Atleos Corporation Common Stock,NATL,US,47.91,48.25
-fail,fail,pass,pass,fail,pass,fail,3,fail,"Yum! Brands, Inc.",YUM,US,160.88,168.85
-pass,fail,pass,pass,fail,pass,fail,4,fail,Pembina Pipeline Corp. Ordinary Shares,PBA,US,48.73,51.11
-fail,fail,pass,pass,fail,pass,fail,3,fail,Nicolet Bankshares Inc. Common Stock,NIC,US,175.72,177.94
-unknown,fail,pass,pass,fail,pass,fail,3,fail,"DuPont de Nemours, Inc. Common Stock",DD,US,155.14,156.12
-fail,fail,pass,pass,fail,fail,fail,2,fail,"Southwest Gas Holdings, Inc. Common St",SWX,US,92.46,94.51
-fail,fail,pass,pass,fail,pass,fail,3,fail,Canadian Pacific Kansas City Limited C,CP,US,94.03,95.61
-fail,fail,pass,pass,fail,fail,fail,2,fail,Ferguson Enterprises Inc. Common Stock,FERG,US,259.93,268.11
-fail,fail,pass,pass,pass,pass,fail,4,fail,"Ryder System, Inc. Common Stock",R,US,278.95,287.29
-fail,fail,pass,pass,fail,fail,fail,2,fail,Allegion plc Ordinary Shares,ALLE,US,190.52,192.67
-fail,fail,pass,pass,fail,pass,fail,3,fail,Balchem Corporation - Common Stock,BCPC,US,175.99,183.17
-unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE6454,6454.T,JP,1746.0,1942.94
-fail,fail,pass,pass,fail,pass,fail,3,fail,Nordson Corporation - Common Stock,NDSN,US,323.84,333.26
-fail,fail,pass,pass,fail,pass,fail,3,fail,"Southern First Bancshares, Inc. - Comm",SFST,US,60.82,64.46
-pass,fail,pass,pass,fail,pass,fail,4,fail,Imperial Oil Limited Common Stock,IMO,US,123.54,137.02
-pass,fail,pass,pass,pass,fail,fail,4,fail,"Five Below, Inc. - Common Stock",FIVE,US,253.76,258.92
-fail,fail,pass,pass,fail,pass,fail,3,fail,Southern Company (The) Common Stock,SO,US,93.57,98.96
-fail,fail,pass,pass,fail,pass,fail,3,fail,GFL Environmental Inc. Subordinate vot,GFL,US,45.88,50.94
+fail,fail,pass,pass,fail,pass,fail,3,fail,TSE4114,4114.T,JP,2410.0,2728.23
+fail,fail,pass,pass,fail,fail,fail,2,fail,"CNO Financial Group, Inc. Common Stock",CNO,US,57.78,59.0
+unknown,fail,pass,pass,fail,pass,fail,3,fail,"Equity Bancshares, Inc. Class A Common",EQBK,US,49.21,52.1
+fail,fail,pass,pass,fail,fail,fail,2,fail,Jones Lang LaSalle Incorporated Common,JLL,US,374.37,394.23
+fail,fail,pass,pass,fail,pass,fail,3,fail,Camden National Corporation - Common S,CAC,US,58.79,60.65
+fail,fail,pass,pass,fail,pass,fail,3,fail,Mercantile Bank Corporation - Common S,MBWM,US,61.36,63.01
+unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE2503,2503.T,JP,3060.0,3181.18
+fail,fail,pass,pass,pass,pass,fail,4,fail,Amalgamated Financial Corp. - Common S,AMAL,US,50.2,51.92
+fail,fail,pass,pass,fail,pass,fail,3,fail,"Safety Insurance Group, Inc. - Common ",SAFT,US,104.49,103.85
+fail,fail,pass,pass,fail,fail,fail,2,fail,NCR Atleos Corporation Common Stock,NATL,US,48.2,48.25
+fail,fail,pass,pass,fail,pass,fail,3,fail,"Yum! Brands, Inc.",YUM,US,160.21,168.85
+pass,fail,pass,pass,fail,pass,fail,4,fail,ConocoPhillips Common Stock,COP,US,135.59,152.92
+pass,fail,pass,pass,fail,pass,fail,4,fail,Pembina Pipeline Corp. Ordinary Shares,PBA,US,49.03,51.11
+fail,fail,pass,pass,fail,pass,fail,3,fail,Nicolet Bankshares Inc. Common Stock,NIC,US,175.53,177.94
+unknown,fail,pass,pass,fail,pass,fail,3,fail,"DuPont de Nemours, Inc. Common Stock",DD,US,156.88,156.12
+fail,fail,pass,pass,fail,fail,fail,2,fail,"Southwest Gas Holdings, Inc. Common St",SWX,US,92.05,94.51
+fail,fail,pass,pass,fail,pass,fail,3,fail,Canadian Pacific Kansas City Limited C,CP,US,93.79,95.61
+fail,fail,pass,pass,fail,fail,fail,2,fail,Ferguson Enterprises Inc. Common Stock,FERG,US,259.44,268.11
+fail,fail,pass,pass,pass,pass,fail,4,fail,"Ryder System, Inc. Common Stock",R,US,281.72,287.29
+unknown,pass,pass,pass,fail,unknown,fail,3,fail,春风动力,603129.SS,CN,314.22,325.32
+fail,fail,pass,pass,fail,fail,fail,2,fail,Allegion plc Ordinary Shares,ALLE,US,189.49,192.67
+fail,fail,pass,pass,fail,pass,fail,3,fail,Balchem Corporation - Common Stock,BCPC,US,173.54,183.17
+unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE6454,6454.T,JP,1793.0,1942.94
+fail,fail,pass,pass,fail,pass,fail,3,fail,Nordson Corporation - Common Stock,NDSN,US,325.1,333.26
+pass,fail,pass,pass,fail,pass,fail,4,fail,Imperial Oil Limited Common Stock,IMO,US,123.28,137.02
+pass,fail,pass,pass,pass,fail,fail,4,fail,"Five Below, Inc. - Common Stock",FIVE,US,253.51,258.92
+fail,fail,pass,pass,fail,pass,fail,3,fail,Southern Company (The) Common Stock,SO,US,93.65,98.96
+fail,fail,pass,pass,fail,fail,fail,2,fail,Willis Towers Watson Public Limited Co,WTW,US,332.87,345.25
 unknown,fail,pass,fail,fail,pass,fail,2,fail,CITIC BANK,0998.HK,HK,8.28,8.58
-fail,fail,pass,pass,fail,pass,fail,3,fail,"S&T Bancorp, Inc. - Common Stock",STBA,US,51.38,52.4
-unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE1899,1899.T,JP,4635.0,5025.02
-fail,fail,pass,pass,fail,pass,fail,3,fail,"United Bankshares, Inc. - Common Stock",UBSI,US,48.8,49.3
-fail,fail,pass,pass,fail,fail,fail,2,fail,"Customers Bancorp, Inc Common Stock",CUBI,US,85.62,87.51
+unknown,fail,pass,pass,pass,unknown,fail,3,fail,模塑科技,000700.SZ,CN,16.2,18.27
+fail,fail,pass,pass,fail,pass,fail,3,fail,"S&T Bancorp, Inc. - Common Stock",STBA,US,51.41,52.4
+unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE1899,1899.T,JP,4895.0,5025.02
+fail,fail,pass,pass,fail,pass,fail,3,fail,"United Bankshares, Inc. - Common Stock",UBSI,US,48.6,49.3
+fail,fail,pass,pass,fail,fail,fail,2,fail,"Customers Bancorp, Inc Common Stock",CUBI,US,85.27,87.51
+fail,fail,pass,pass,fail,unknown,fail,2,fail,Tanger Inc. Common Stock,SKT,US,39.75,41.54
 unknown,fail,pass,pass,fail,pass,fail,3,fail,MIDEA GROUP,0300.HK,HK,100.3,99.35
-unknown,pass,pass,pass,fail,pass,fail,4,fail,TSE4373,4373.T,JP,1143.0,1281.28
-fail,fail,pass,pass,fail,pass,fail,3,fail,TSE9534,9534.T,JP,880.0,949.95
-pass,fail,pass,pass,fail,pass,fail,4,fail,First Bancorp - Common Stock,FBNC,US,65.31,66.1
-unknown,pass,pass,pass,fail,pass,fail,4,fail,Griffon Corporation Common Stock,GFF,US,106.77,106.38
-unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE4578,4578.T,JP,11965.0,12482.47
-fail,fail,pass,pass,fail,pass,fail,3,fail,"East West Bancorp, Inc. - Common Stock",EWBC,US,130.97,134.01
-fail,fail,pass,pass,fail,fail,fail,2,fail,Packaging Corporation of America Commo,PKG,US,254.41,256.07
-fail,fail,pass,pass,unknown,pass,fail,3,fail,"Sunbelt Rentals Holdings, Inc. Common ",SUNB,US,81.63,84.49
+unknown,pass,pass,pass,fail,pass,fail,4,fail,TSE4373,4373.T,JP,1170.0,1281.28
+fail,fail,pass,pass,fail,pass,fail,3,fail,TSE9534,9534.T,JP,881.0,949.95
+pass,fail,pass,pass,fail,pass,fail,4,fail,First Bancorp - Common Stock,FBNC,US,64.81,66.1
+unknown,pass,pass,pass,fail,pass,fail,4,fail,Griffon Corporation Common Stock,GFF,US,104.38,106.38
+unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE4578,4578.T,JP,11980.0,12482.47
+fail,fail,pass,pass,fail,pass,fail,3,fail,"East West Bancorp, Inc. - Common Stock",EWBC,US,130.74,134.01
+fail,fail,pass,pass,fail,fail,fail,2,fail,Packaging Corporation of America Commo,PKG,US,254.23,256.07
+fail,fail,pass,pass,unknown,pass,fail,3,fail,"Sunbelt Rentals Holdings, Inc. Common ",SUNB,US,81.37,84.49
 unknown,fail,pass,pass,fail,pass,fail,3,fail,BOC HONG KONG,2388.HK,HK,50.8,52.5
-unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE3002,3002.T,JP,4375.0,4644.64
+unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE3002,3002.T,JP,4360.0,4644.64
 fail,fail,pass,pass,fail,pass,fail,3,fail,KT&G,033780.KS,KR,182400.0,195695.5
-fail,fail,pass,pass,fail,pass,fail,3,fail,CSX Corporation - Common Stock,CSX,US,50.48,52.2
-fail,fail,pass,pass,fail,fail,fail,2,fail,Willis Towers Watson Public Limited Co,WTW,US,327.01,343.67
-fail,fail,pass,pass,pass,pass,fail,4,fail,"Life Time Group Holdings, Inc. Common ",LTH,US,46.89,47.37
-fail,fail,pass,pass,fail,pass,fail,3,fail,"Waste Management, Inc. Common Stock",WM,US,236.61,241.71
-fail,fail,pass,pass,fail,pass,fail,3,fail,Bank Nova Scotia Halifax Pfd 3 Ordinar,BNS,US,93.34,94.28
-fail,fail,pass,pass,fail,fail,fail,2,fail,"CACI International, Inc. Class A Commo",CACI,US,639.97,675.11
-fail,fail,pass,pass,fail,pass,fail,3,fail,FB Financial Corporation Common Stock,FBK,US,55.1,60.9
+fail,fail,pass,pass,fail,pass,fail,3,fail,CSX Corporation - Common Stock,CSX,US,51.08,52.2
+fail,fail,pass,pass,pass,pass,fail,4,fail,"Life Time Group Holdings, Inc. Common ",LTH,US,47.42,47.37
+fail,fail,pass,pass,fail,pass,fail,3,fail,"Waste Management, Inc. Common Stock",WM,US,237.38,241.71
+fail,fail,pass,pass,fail,pass,fail,3,fail,Bank Nova Scotia Halifax Pfd 3 Ordinar,BNS,US,92.63,94.28
+fail,fail,pass,pass,fail,fail,fail,2,fail,"CACI International, Inc. Class A Commo",CACI,US,647.57,675.11
+fail,fail,pass,pass,fail,pass,fail,3,fail,FB Financial Corporation Common Stock,FBK,US,54.9,60.9
 fail,fail,pass,pass,pass,pass,fail,4,fail,Chemung Financial Corp  - Common Stock,CHMG,US,86.29,86.74
-fail,fail,pass,pass,fail,fail,fail,2,fail,Vulcan Materials Company (Holding Comp,VMC,US,289.44,321.48
-unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE6250,6250.T,JP,4260.0,4474.47
-unknown,fail,pass,pass,pass,pass,fail,4,fail,TSE2579,2579.T,JP,4671.0,4664.66
-fail,fail,pass,pass,fail,pass,fail,3,fail,TSE9347,9347.T,JP,3075.0,3098.1
-unknown,pass,pass,pass,fail,fail,fail,3,fail,Ascendis Pharma A/S - Ordinary Share,ASND,US,259.85,272.74
-fail,fail,pass,pass,fail,pass,fail,3,fail,"Eastern Bankshares, Inc. - Common Stoc",EBC,US,23.35,22.95
-fail,fail,pass,pass,pass,pass,fail,4,fail,Science Applications International Cor,SAIC,US,150.96,150.94
-pass,fail,pass,pass,fail,fail,fail,3,fail,"Affiliated Managers Group, Inc. Common",AMG,US,383.15,386.25
-unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE8194,8194.T,JP,2698.0,2730.73
-fail,fail,pass,pass,pass,pass,fail,4,fail,"Coca-Cola Consolidated, Inc. - Common ",COKE,US,207.97,212.07
-fail,fail,pass,pass,fail,fail,fail,2,fail,"IDACORP, Inc. Common Stock",IDA,US,146.68,149.3
-fail,fail,pass,pass,fail,pass,fail,3,fail,Johnson & Johnson Common Stock,JNJ,US,282.11,272.63
-unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE4674,4674.T,JP,1947.0,2110.11
-fail,fail,pass,pass,pass,pass,fail,4,fail,"Victory Capital Holdings, Inc. - Commo",VCTR,US,126.8,123.67
-fail,fail,pass,pass,fail,pass,fail,3,fail,FedEx Corporation Common Stock,FDX,US,318.84,332.33
-fail,fail,pass,pass,fail,pass,fail,3,fail,General Motors Company Common Stock,GM,US,89.65,90.13
-fail,fail,pass,pass,pass,fail,fail,3,fail,"Ryman Hospitality Properties, Inc. (RE",RHP,US,135.42,132.18
-fail,fail,pass,pass,fail,fail,fail,2,fail,Vertex Pharmaceuticals Incorporated - ,VRTX,US,550.87,546.72
-fail,pass,pass,pass,pass,fail,fail,4,fail,The Cheesecake Factory Incorporated - ,CAKE,US,110.96,113.86
-unknown,fail,pass,pass,pass,pass,fail,4,fail,"Pulse Biosciences, Inc - Common Stock",PLSE,US,58.17,56.57
-fail,fail,pass,pass,fail,pass,fail,3,fail,Canadian Imperial Bank of Commerce Com,CM,US,116.83,119.85
-fail,fail,pass,pass,fail,fail,fail,2,fail,"Darden Restaurants, Inc. Common Stock",DRI,US,229.77,224.72
-fail,fail,pass,pass,fail,pass,fail,3,fail,Enterprise Products Partners L.P. Comm,EPD,US,36.7,39.73
-fail,fail,pass,pass,fail,pass,fail,3,fail,AFLAC Incorporated Common Stock,AFL,US,125.22,125.82
-fail,fail,pass,pass,fail,pass,fail,3,fail,Illinois Tool Works Inc. Common Stock,ITW,US,286.73,290.79
-fail,pass,pass,pass,fail,fail,fail,3,fail,Ralph Lauren Corporation Common Stock,RL,US,398.52,404.36
-unknown,fail,pass,pass,pass,pass,fail,4,fail,TSE3097,3097.T,JP,6330.0,6156.15
-fail,fail,pass,pass,fail,fail,fail,2,fail,Essent Group Ltd. Common Shares,ESNT,US,65.76,68.83
-unknown,pass,pass,pass,fail,pass,fail,4,fail,TSE7936,7936.T,JP,5077.0,5211.21
-unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE8053,8053.T,JP,1638.5,1857.86
-fail,fail,pass,pass,fail,fail,fail,2,fail,Curbline Properties Corp. Common Stock,CURB,US,29.73,30.71
+fail,fail,pass,pass,fail,fail,fail,2,fail,Vulcan Materials Company (Holding Comp,VMC,US,287.31,321.48
+fail,fail,pass,pass,fail,pass,fail,3,fail,TSE1982,1982.T,JP,3020.0,3383.38
+unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE6250,6250.T,JP,4325.0,4474.47
+unknown,fail,pass,pass,pass,pass,fail,4,fail,TSE2579,2579.T,JP,4477.0,4664.66
+fail,fail,pass,pass,fail,pass,fail,3,fail,TSE9347,9347.T,JP,3050.0,3098.1
+fail,fail,pass,pass,fail,unknown,fail,2,fail,Deere & Company Common Stock,DE,US,687.64,697.7
+fail,fail,pass,pass,fail,pass,fail,3,fail,"Eastern Bankshares, Inc. - Common Stoc",EBC,US,23.1,22.95
+fail,fail,pass,pass,pass,pass,fail,4,fail,Science Applications International Cor,SAIC,US,152.53,150.94
+unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE8194,8194.T,JP,2697.0,2730.73
+fail,fail,pass,pass,pass,pass,fail,4,fail,"Coca-Cola Consolidated, Inc. - Common ",COKE,US,214.28,212.07
+fail,fail,pass,pass,pass,pass,fail,4,fail,"Guardian Pharmacy Services, Inc. Class",GRDN,US,49.85,48.38
+fail,fail,pass,pass,fail,fail,fail,2,fail,"IDACORP, Inc. Common Stock",IDA,US,148.27,149.3
+unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE4674,4674.T,JP,1959.0,2110.11
+fail,fail,pass,pass,fail,pass,fail,3,fail,Johnson & Johnson Common Stock,JNJ,US,280.78,272.63
+fail,fail,pass,pass,fail,pass,fail,3,fail,FedEx Corporation Common Stock,FDX,US,319.48,332.33
+fail,fail,pass,pass,fail,pass,fail,3,fail,General Motors Company Common Stock,GM,US,88.69,90.13
+fail,fail,pass,pass,fail,fail,fail,2,fail,Vertex Pharmaceuticals Incorporated - ,VRTX,US,547.89,546.72
+fail,pass,pass,pass,pass,fail,fail,4,fail,The Cheesecake Factory Incorporated - ,CAKE,US,108.8,113.86
+unknown,fail,pass,pass,pass,pass,fail,4,fail,"Pulse Biosciences, Inc - Common Stock",PLSE,US,55.12,56.57
+fail,fail,pass,pass,fail,pass,fail,3,fail,Canadian Imperial Bank of Commerce Com,CM,US,115.78,119.85
+fail,fail,pass,pass,fail,fail,fail,2,fail,"Darden Restaurants, Inc. Common Stock",DRI,US,228.66,224.72
+fail,fail,pass,pass,fail,pass,fail,3,fail,Enterprise Products Partners L.P. Comm,EPD,US,37.13,39.73
+fail,fail,pass,pass,fail,pass,fail,3,fail,AFLAC Incorporated Common Stock,AFL,US,126.64,125.82
+fail,fail,pass,pass,fail,pass,fail,3,fail,Illinois Tool Works Inc. Common Stock,ITW,US,288.05,290.79
+fail,pass,pass,pass,fail,fail,fail,3,fail,Ralph Lauren Corporation Common Stock,RL,US,399.61,404.36
+unknown,fail,pass,pass,pass,pass,fail,4,fail,TSE3097,3097.T,JP,6370.0,6156.15
+fail,fail,pass,pass,fail,fail,fail,2,fail,Essent Group Ltd. Common Shares,ESNT,US,64.68,68.83
+unknown,pass,pass,pass,fail,pass,fail,4,fail,TSE7936,7936.T,JP,5151.0,5211.21
+fail,fail,pass,pass,pass,pass,fail,4,fail,"Victory Capital Holdings, Inc. - Commo",VCTR,US,126.38,123.67
+fail,fail,pass,pass,fail,unknown,fail,2,fail,"Simpson Manufacturing Company, Inc. Co",SSD,US,201.43,208.7
+unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE8053,8053.T,JP,1705.5,1857.86
+fail,fail,pass,pass,fail,fail,fail,2,fail,Curbline Properties Corp. Common Stock,CURB,US,29.36,30.71
 pass,fail,pass,pass,fail,pass,fail,4,fail,코리안리,003690.KS,KR,13280.0,14934.92
-pass,fail,pass,pass,fail,fail,fail,3,fail,Alliant Energy Corporation - Common St,LNT,US,73.46,75.2
-unknown,pass,pass,pass,pass,pass,fail,5,fail,Marex Group Limited - Ordinary Shares,MRX,US,67.91,75.48
-unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE9279,9279.T,JP,2593.0,2614.61
-fail,pass,pass,pass,fail,pass,fail,4,fail,"HCI Group, Inc. Common Stock",HCI,US,186.25,200.6
-fail,fail,pass,pass,fail,pass,fail,3,fail,Royal Bank Of Canada Common Stock,RY,US,204.17,208.4
-fail,fail,pass,pass,fail,pass,fail,3,fail,Fulton Financial Corporation - Common ,FULT,US,24.13,24.02
-unknown,fail,pass,pass,pass,pass,fail,4,fail,Peapack-Gladstone Financial Corporatio,PGC,US,46.53,46.78
-fail,fail,pass,pass,fail,pass,fail,3,fail,TSE7239,7239.T,JP,2226.0,2294.29
-unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE8057,8057.T,JP,2412.0,2455.45
-fail,fail,pass,pass,fail,fail,fail,2,fail,CNA Financial Corporation Common Stock,CNA,US,47.39,52.91
-fail,fail,pass,pass,fail,pass,fail,3,fail,"Home BancShares, Inc. Common Stock",HOMB,US,30.4,31.28
-unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE6432,6432.T,JP,7460.0,7817.81
-fail,fail,pass,pass,fail,pass,fail,3,fail,TSE8153,8153.T,JP,4490.0,4319.31
-fail,fail,pass,pass,fail,fail,fail,2,fail,Restaurant Brands International Inc. C,QSR,US,77.52,78.98
-unknown,fail,pass,pass,pass,pass,fail,4,fail,TSE7504,7504.T,JP,5220.0,5205.2
-fail,fail,pass,pass,fail,pass,fail,3,fail,TSE9605,9605.T,JP,6280.0,6216.21
-unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE7984,7984.T,JP,880.3,923.92
-unknown,fail,pass,fail,fail,pass,fail,2,fail,Apple Inc. - Common Stock,AAPL,US,350.69,336.56
-fail,fail,pass,pass,fail,pass,fail,3,fail,"Business First Bancshares, Inc. - Comm",BFST,US,32.79,31.9
-unknown,unknown,pass,unknown,fail,unknown,fail,1,fail,"Texas Capital Bancshares, Inc. Common ",TXCP,US,101.26,103.15
-unknown,unknown,pass,unknown,fail,unknown,fail,1,fail,TSE2641,2641.T,JP,4547.0,4484.48
-pass,fail,pass,pass,pass,pass,fail,5,fail,TSE8725,8725.T,JP,5107.0,5078.07
-unknown,fail,pass,fail,fail,pass,unknown,2,fail,工商银行,601398.SS,CN,8.61,8.41
-fail,fail,pass,pass,fail,pass,fail,3,fail,Loews Corporation Common Stock,L,US,109.94,114.5
-fail,fail,pass,pass,fail,fail,fail,2,fail,"White Mountains Insurance Group, Ltd. ",WTM,US,2256.2,2251.3
-unknown,fail,pass,pass,pass,pass,fail,4,fail,TSE9678,9678.T,JP,5590.0,5505.5
-fail,fail,pass,pass,fail,pass,fail,3,fail,TSE7988,7988.T,JP,2515.5,2629.63
-unknown,fail,pass,pass,pass,pass,fail,4,fail,TSE9147,9147.T,JP,5542.0,5703.7
-fail,fail,pass,pass,fail,pass,fail,3,fail,TSE5901,5901.T,JP,4438.0,4408.4
-fail,fail,pass,pass,fail,pass,fail,3,fail,"Franklin Electric Co., Inc. - Common S",FELE,US,96.98,109.43
-fail,fail,pass,pass,fail,pass,fail,3,fail,"Phillips Edison & Company, Inc. - Comm",PECO,US,40.83,41.94
-fail,fail,pass,pass,fail,pass,fail,3,fail,Graham Holdings Company Common Stock,GHC,US,1215.76,1198.67
-unknown,unknown,pass,pass,unknown,pass,fail,3,fail,"First Tracks Biotherapeutics, Inc. - O",TRAX,US,49.7,47.6
-fail,fail,pass,pass,fail,fail,fail,2,fail,Atmos Energy Corporation Common Stock,ATO,US,173.35,181.69
-unknown,unknown,pass,unknown,fail,unknown,fail,1,fail,TSE2564,2564.T,JP,3508.0,3579.58
-unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE4812,4812.T,JP,2873.0,2762.76
-fail,fail,pass,pass,pass,pass,fail,4,fail,TSE8022,8022.T,JP,4350.0,4394.39
-fail,fail,pass,pass,fail,pass,fail,3,fail,Fortis Inc. Common Shares,FTS,US,59.53,58.12
-fail,fail,pass,pass,fail,pass,fail,3,fail,TSE9065,9065.T,JP,1726.5,1896.29
-fail,fail,pass,pass,fail,pass,fail,3,fail,CME Group Inc. - Class A Common Stock,CME,US,304.52,309.71
-fail,fail,pass,pass,fail,fail,fail,2,fail,"Republic Services, Inc. Common Stock",RSG,US,246.78,243.46
-fail,fail,pass,pass,pass,pass,fail,4,fail,Royalty Pharma plc - Class A Ordinary ,RPRX,US,68.77,65.57
-fail,pass,pass,pass,fail,pass,fail,4,fail,Costco Wholesale Corporation - Common ,COST,US,1066.18,1029.47
-pass,fail,pass,pass,fail,pass,fail,4,fail,Nucor Corporation Common Stock,NUE,US,249.24,270.29
-fail,fail,pass,pass,fail,pass,fail,3,fail,TSE2001,2001.T,JP,2931.0,2868.87
-fail,fail,pass,pass,fail,pass,fail,3,fail,TSE8424,8424.T,JP,4003.0,4477.47
-unknown,fail,pass,pass,pass,fail,fail,3,fail,Ralliant Corporation Common Stock,RAL,US,69.98,70.7
-unknown,unknown,pass,pass,pass,pass,fail,4,fail,Lindblad Expeditions Holdings Inc.  - ,LIND,US,35.7,36.4
+pass,fail,pass,pass,fail,fail,fail,3,fail,Alliant Energy Corporation - Common St,LNT,US,73.24,75.2
+pass,pass,pass,pass,pass,pass,fail,6,fail,Marex Group Limited - Ordinary Shares,MRX,US,69.26,75.48
+unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE9279,9279.T,JP,2612.0,2614.61
+fail,pass,pass,pass,fail,pass,fail,4,fail,"HCI Group, Inc. Common Stock",HCI,US,188.53,200.6
+fail,fail,pass,pass,fail,pass,fail,3,fail,Royal Bank Of Canada Common Stock,RY,US,202.42,208.4
+fail,fail,pass,pass,fail,pass,fail,3,fail,Fulton Financial Corporation - Common ,FULT,US,24.0,24.02
+unknown,fail,pass,pass,pass,pass,fail,4,fail,Peapack-Gladstone Financial Corporatio,PGC,US,46.18,46.78
+fail,fail,pass,pass,pass,fail,fail,3,fail,"Ryman Hospitality Properties, Inc. (RE",RHP,US,138.53,132.18
+fail,fail,pass,pass,fail,pass,fail,3,fail,TSE7239,7239.T,JP,2276.0,2294.29
+unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE8057,8057.T,JP,2447.0,2455.45
+fail,fail,fail,pass,fail,pass,fail,2,fail,TSE4041,4041.T,JP,3530.0,3993.99
+fail,fail,pass,pass,fail,fail,fail,2,fail,CNA Financial Corporation Common Stock,CNA,US,48.16,52.91
+fail,fail,pass,pass,fail,pass,fail,3,fail,"Home BancShares, Inc. Common Stock",HOMB,US,30.23,31.28
+unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE6432,6432.T,JP,7670.0,7817.81
+fail,fail,pass,pass,fail,pass,fail,3,fail,TSE8153,8153.T,JP,4480.0,4319.31
+pass,fail,pass,pass,pass,fail,fail,4,fail,"Affiliated Managers Group, Inc. Common",AMG,US,401.32,386.25
+fail,fail,pass,pass,fail,fail,fail,2,fail,Restaurant Brands International Inc. C,QSR,US,77.63,78.98
+fail,fail,pass,pass,fail,pass,fail,3,fail,TSE9605,9605.T,JP,6270.0,6216.21
+unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE7984,7984.T,JP,867.3,923.92
+unknown,fail,pass,fail,fail,pass,fail,2,fail,Apple Inc. - Common Stock,AAPL,US,348.51,336.56
+fail,fail,pass,pass,fail,pass,fail,3,fail,"Business First Bancshares, Inc. - Comm",BFST,US,32.73,31.9
+fail,fail,pass,pass,fail,unknown,fail,2,fail,"Texas Capital Bancshares, Inc. Common ",TXCP,US,99.82,103.15
+unknown,unknown,pass,unknown,fail,unknown,fail,1,fail,TSE2641,2641.T,JP,4618.0,4484.48
+pass,fail,pass,pass,pass,pass,fail,5,fail,TSE8725,8725.T,JP,5149.0,5078.07
+unknown,fail,pass,fail,fail,pass,fail,2,fail,工商银行,601398.SS,CN,8.6,8.41
+fail,fail,pass,pass,fail,pass,fail,3,fail,Loews Corporation Common Stock,L,US,110.93,114.5
+fail,fail,pass,pass,fail,fail,fail,2,fail,"White Mountains Insurance Group, Ltd. ",WTM,US,2280.0,2251.3
+unknown,fail,pass,pass,pass,pass,fail,4,fail,TSE9678,9678.T,JP,5690.0,5505.5
+fail,fail,pass,pass,fail,pass,fail,3,fail,TSE7988,7988.T,JP,2574.0,2629.63
+unknown,fail,pass,pass,pass,pass,fail,4,fail,TSE9147,9147.T,JP,5629.0,5703.7
+fail,fail,pass,pass,fail,pass,fail,3,fail,TSE5901,5901.T,JP,4512.0,4408.4
+fail,fail,pass,pass,fail,pass,fail,3,fail,"Franklin Electric Co., Inc. - Common S",FELE,US,97.72,109.43
+fail,fail,pass,pass,fail,pass,fail,3,fail,"Phillips Edison & Company, Inc. - Comm",PECO,US,41.2,41.94
+fail,fail,pass,pass,fail,pass,fail,3,fail,Graham Holdings Company Common Stock,GHC,US,1222.24,1198.67
+fail,fail,pass,pass,fail,fail,fail,2,fail,Atmos Energy Corporation Common Stock,ATO,US,175.37,181.69
+pass,pass,pass,pass,pass,fail,fail,5,fail,"Virtu Financial, Inc. Class A Common S",VIRT,US,57.75,64.94
+unknown,unknown,pass,unknown,fail,unknown,fail,1,fail,TSE2564,2564.T,JP,3530.0,3579.58
+unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE4812,4812.T,JP,2872.0,2762.76
+fail,fail,pass,pass,pass,pass,fail,4,fail,TSE8022,8022.T,JP,4460.0,4394.39
+fail,fail,pass,pass,fail,pass,fail,3,fail,Fortis Inc. Common Shares,FTS,US,59.7,58.12
+fail,fail,fail,pass,fail,pass,fail,2,fail,TSE3407,3407.T,JP,1580.5,1794.79
+fail,fail,pass,pass,fail,pass,fail,3,fail,TSE9065,9065.T,JP,1742.0,1896.29
+fail,fail,pass,pass,fail,pass,fail,3,fail,CME Group Inc. - Class A Common Stock,CME,US,309.09,309.71
+pass,fail,fail,pass,fail,pass,fail,3,fail,Permian Resources Corporation Class A ,PR,US,21.72,24.52
