@@ -3,7 +3,6 @@ pass,pass,pass,pass,pass,pass,fail,6,fail,TSE7747,7747.T,JP,4348.0,4331.33
 fail,fail,pass,pass,pass,unknown,fail,3,fail,가비아,079940.KQ,KR,48700.0,51251.2
 fail,fail,pass,pass,fail,pass,fail,3,fail,Cincinnati Financial Corporation - Com,CINF,US,186.54,195.92
 fail,fail,pass,pass,fail,fail,fail,2,fail,Liberty Media Corporation - Series A C,FWONA,US,99.87,106.63
-unknown,unknown,pass,pass,fail,pass,fail,3,fail,"Liberty Live Holdings, Inc. - Series A",LLYVA,US,100.02,108.71
 fail,fail,pass,pass,fail,pass,fail,3,fail,"QCR Holdings, Inc. - Common Stock",QCRH,US,96.79,108.22
 fail,fail,pass,pass,fail,fail,fail,2,fail,"American Healthcare REIT, Inc. Common ",AHR,US,57.54,59.6
 fail,fail,pass,pass,pass,fail,fail,3,fail,"Corpay, Inc. Common Stock",CPAY,US,429.84,480.01
@@ -105,7 +104,7 @@ fail,fail,pass,pass,pass,fail,fail,3,fail,"Ryman Hospitality Properties, Inc. (R
 fail,fail,pass,pass,fail,fail,fail,2,fail,"White Mountains Insurance Group, Ltd. ",WTM,US,2194.65,2251.3
 unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE7988,7988.T,JP,2453.0,2629.63
 fail,fail,pass,pass,fail,pass,fail,3,fail,"Phillips Edison & Company, Inc. - Comm",PECO,US,40.41,41.94
-fail,pass,pass,pass,pass,fail,fail,4,fail,The Cheesecake Factory Incorporated - ,CAKE,US,107.94,113.86
+fail,pass,pass,pass,pass,fail,fail,4,fail,The Cheesecake Factory Incorporated - ,CAKE,US,107.95,113.86
 unknown,unknown,pass,unknown,fail,unknown,fail,1,fail,TSE2564,2564.T,JP,3460.0,3579.58
 unknown,fail,pass,pass,pass,pass,fail,4,fail,TSE4812,4812.T,JP,2875.0,2762.76
 pass,fail,pass,pass,pass,pass,fail,5,fail,TSE8725,8725.T,JP,5081.0,5078.07
@@ -149,3 +148,4 @@ fail,fail,pass,pass,fail,fail,fail,2,fail,"IDEXX Laboratories, Inc. - Common Sto
 unknown,fail,pass,pass,fail,pass,fail,3,fail,TSE4091,4091.T,JP,5714.0,6040.03
 unknown,fail,pass,pass,pass,pass,fail,4,fail,TSE9147,9147.T,JP,5693.0,5703.7
 fail,fail,pass,pass,fail,fail,fail,2,fail,Ameris Bancorp Common Stock,ABCB,US,79.56,86.39
+fail,fail,fail,pass,fail,unknown,fail,1,fail,"Ameriprise Financial, Inc. Common Stoc",AMP,US,480.29,539.47
